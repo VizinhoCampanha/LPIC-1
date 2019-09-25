@@ -1,0 +1,126 @@
+110.1 Realizar Tarefas de Segurança do Sistema
+
+su=Mudar de usuário, mantendo as mesmas configurações do usuário antigo, como variaveis, profile e bashrc.
+-=Opção utilizada para logar com um novo usuário carregando suas permições e variaveis.
+-c "comando"=Opção utilizada para executar um comando que só o "root" tem permissão.
+sudo=Parecido com o "su", porém você não necessita ter a senha de "root", basta estar configurano do arquivo: /etc/sudoers.
+user ou %grup     terminal=(usuário:grupo que pode ser assumido - opcional)     Comandos que podem ser executados
+user           ALL=(ALL:ALL)     ALL
+%grup       ALL=(ALL:ALL)      ALL
+Posso criar um "alias" contendo os comandos que podem ser executados:
+Cmnd_Alias TESTE= /sbin/fdisk, /sbin/parted
+user     ALL=TESTE
+who=Mostra os usuários logados na máquina.
+-a=Mostra mais detalhes.
+-H=Mostra o header.
+w=Mostra os usuários logados e o que eles estão fazendo.
+last=Mostra um histórico de logins da máquina. O armazenamento das informações de login ficam no arquivo: /var/log/wtmp (Arquivo binário, só pode ser acessado pelo "last").
+-f=Apontar para um arquivo wtmp que foi rotacionado.
+lastb=Usuários que tentaram logar na máquina e por algum motivo não conseguiram. O armazenamento das informações de logins bloqueados ficam no arquivo: /var/log/btmp (Arquivo binário, só pode ser acessado pelo "last").
+lastlog=Mostra a lista de todos usuários do sistema e a data do ultimo login de cada.
+-u=Opção para passar usuário que deseja ver.
+find / -perm -4000 -ls=Mostra os arquivos com o SUID ativo, que pode gerar um risco no sistema.
+find / -perm -2000 -ls=Mostra os arquivos com o SGID ativo, que pode gerar um risco no sistema.
+-nouser=Mostra arquivos atrelados a usuários que não existem.
+-nogrup=Mostra arquivos atrelados a grupos que não existem.
+ulimit=Utilizado para monitorar e setar o limite de utilização de recursos da máquina, apenas na sessão atual.
+-a=Mostra todos os recursos disponíveis para a sessão.
+/etc/security/limits.conf=Arquivo onde são setados os limites de recurso da máquina de forma permanente.
+hard=Valor máximo que um item pode chegar.
+soft=Valor especificado para um item.
+lsof=Mostra arquivos e processos abertos.
+-i=Mostra conexões de rede abertas.
+nmap "host or IP or IP/24(todos IP's)"=Faz um scan na máquina mostrando os servições e as portas abertas.
+-O=Mostra o sistema operacional.
+fuser "porta"=Mostra o processo que está utilizando esta porta.
+-u=Mostra o usuário.
+-v=Mostra mais informações.
+
+110.2 Configurar Segurança do Host
+
+nologin=Utilizado para impossibilitar que usuários logen no sistema exeto o "root", você cria este arquivo com uma mensagem em: /etc/nologin
+Muitos serviços podem causar insegurança no sistema, por esse motivo podemos querer para-los.
+systemd:
+systemctl stop "serviço"=Utilizado para parar o serviço, porem caso a máquina seja reiniciada o serviço volta.
+systemctl is-enabled "serviço"=Utilizado para verificar se o serviço esta "enabled"(o serviço sobe automaticamente) ou "disabled".
+systemctl disable "serviço"=Desabilita a inicialização do serviço junto com o sistema.
+systemV:
+/etc/inittab=Aquivo onde deve ser verificado o que está sendo iniado.
+/etc/rc*=São nesses diretórios onde ficam os serviços que serão chamados (O que começar com S será iniciado e K não).
+/etc/init.d/=Onde ficam os Scripts que chamam os serviços.
+initd or xinitd=Existem alguns serviços que são disponibilizados através do initd ou xinitd por questões de segurança, porém isso é mais encontrado em servidores antigos. O initid ou xinitd valida primeiro um serviço para depois passar para o próprio serviço executa-lo.
+/etc/initd.conf=Principal arquivo de configuração.
+TCP Wrapper=É uma forma de colocar um processo dentro do outro. O "/usr/sbin/tcpd" é utilizado para executar outro serviço como por exemplo telnet, ftp, servindo como um fator de proteção.
+Caso a maquina que esteja tentando acessar não esteja em nenhum dos arquivos abaixo é liberada.
+/etc/hosts.allow=Neste arquivo ficam os IP's ou Hosts das máquinas que podem utilizar os serviços protegidos pelo TCP Wrapper.
+/etc/hosts.deny=Neste arquivo ficam os IP's ou Hosts das máquinas que não podem utilizar os serviços protegidos pelo TCP Wrapper.
+ALL:ALL=Geralmente é acrescentado isso para bloquear tudo e liberar somente o que consta no hosts.allow.
+xinitd=É uma evolução do "initd". O xinitd utiliza o TCP Wrapper de outra forma, assim como outros programas ele utiliza através da biblioteca "libwrap.so.0".
+/etc/xinit.d/=Este diretório é o principal local de configuração do xinitd, porém primeiro é levado em consideração as informações contidas no hosts.allow e hosts.deny.
+
+
+110.3 Protegendo Dados com Encriptação
+
+Criptografia=Forma utilizada para gerar segurança a um determinado conteúdo, impedindo que ele seja lido de forma clara.
+Principais obietivos:
+Autenticidade;
+Confiabilidade;
+Integridade;
+Irretratabilidade.
+SSH(Secure Shell)=Protocolo de criptografia de rede entre dois hosts(Client to Server), o ssh utiliza chaves assimétricas que é dividia em dois tipos de chaves:
+Chaves Assimetricas:
+Chave Pública=A chave pública é que é disponibilizada junto com a mensagem, e faz parte de criptografia.
+Chave Privada=A chave privada é do cliente e ela é necessária para descriptografar e ler a mensagem com a chave pública.
+openssh=Principal aplicativo de Cliente SSH.
+openssh-server=Principal aplicativo de Server SSH.
+/etc/ssh/ssh_config=Principal arquivo de configuração SSH do Client.
+/etc/ssh/sshd_config=Principal arquivo de configuração SSH do Server (Daemon).
+/etc/ssh/ssh_host_"tipo-da-chave"_key=Arquivo com a chave privada (permissão=600).
+/etc/ssh/ssh_host_"tipo-da-chave"_key.pub=Arquivo com a chave pública (permissão=644).
+Formas de conexão SSH utilizando senha:
+ssh "user"@"host or IP destino"
+ssh -l "user" "host or IP destino"
+ssh "host or IP destino" - Utiliza o nome de usuário da máquina de origem.
+Forma de conexão SSH utilizando utilizando chaves, sem necessidade de digitar a senha:
+ssh-keygen=Comando utilizado para criar uma chave pública e uma privada para o "usuário e na máquina Cliente".
+-t=Tipo da criptografia.
+-b=Quantidade de bites da chave.
+ssh-keygen -t rsa -b 1024
+Uma vez criadas ambas as chaves, você deve criar o arquivo authorized_keys na máquina Server em ~user/.ssh/authorized_keys, e colocar a chave pública que você gerou no máquina Cliente dentro desse arquivo (permissão=600).
+Forma de conexão SSH utilizando o passphrase:
+ssh-agent=Comando utilizado para armazenar temporariamente a senha gerada para a chave criada.
+ssh-add=Comando utilizado para informar a senha da chave e ficar armazenada temporariamente com o "ssh-agent".
+-D=Opção utilizada para limpar as senhas armazenadas no "ssh-agent".
+Caso seja a primeira conexão com o Server destino, Cliente e Servidor irão negociar as chaves e o Server irá retornar sua chave pública para acessos futuros, que ficará armazenada em ~user/.ssh/known_hosts, caso a máquina Destino altere sua chave pública, dará um erro no momento da conexão e teremos que apagar manualmente em ~user/.ssh/known_hosts a linha que represente a chave publica antiga do Server.
+Tunel SSH=Conexão estabelecida entre dois servidores de forma criptografada, em uma porta específica, que ao acessar o IP e Porta do Server você é redirecionado para o outro.
+ssh -N -f -L 2323:10.0.0.1:23 user@10.0.0.1
+-N=Não executar nenhum comando.
+-f=Rodar em background.
+-L=Passar parâmetro do túnel (porta ouvir localmente:ip remote server:port remote server).
+ssh -X user@10.0.0.1 "gnome-calculator"
+-X=Opção utilizada para executar algum recurso gráfico no servidor remoto.
+Executa um comando no servidor remoto:
+ssh user@10.0.0.1 "comando"
+scp=Faz parte do pacote "openssh-client", com ele você consegue enviar e receber arquivos via ssh de um servidor para o outro.
+Envia arquivo:
+scp arquivo user@10.0.0.1:~/caminho
+Busca arquivo:
+scp user@10.0.0.1:~/caminho ./local para descarregar
+
+gpg=Utilizado para criptografar arquivos, e-mails, etc. Para visualizar o conteúdo de um arquivo criptografado deve-se ter um arquivo contendo sua chave pública.
+--gen-key=Ele deve gerar as chaves publicas e privadas assim como no SSH.
+--list-keys=Mostra as chaves geradas (Também ficam armazenadas informações das chaves em ~/.gnupg/*).
+--export "Nome do uid" > chave.pub=Utilizado para exportar a chave publica para descriptografar um arquivo.
+--output chave.pub --export "Nome do uid"=Utilizado para exportar a chave publica para descriptografar um arquivo.
+--armor=Opção utilizada para gerar o arquivo de chave publica de forma legível e não binário.
+--keyserver=Servidor que será enviado a chave pública.
+--send-keys "ID"=Utilizado para adicionar uma chave pública a um servidor.
+--gen-revoke "ID"=Utilizado para remover uma chave pública de um servidor.
+--recv-keys "ID"=Utilizado para receber uma chave pública em um servidor.
+--import "Arquivo com a chave Pública"=Comando utilizado para importar a chave pública para seu sistema, utilizado para visualizar arquivos criptografados que dependam dessa chave.
+--recipient "Nome do uid"=Utilizado para setar a chave pública que será utilizada para criptografar o arquivo.
+--encrypt=Arquivo que será criptografado.
+--decrypt=Arquivo que será de-criptografado.
+--sign=Utilizado para assinar um arquivo, com a chave pública pode ser checada sua integridade.
+--verify=Verifica se a assinatura do arquivo está íntegra.
+
