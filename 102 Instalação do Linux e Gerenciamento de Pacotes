@@ -1,0 +1,236 @@
+102.1 Design do Layout do HD
+
+No linux um HD é correspondido pela sigla "sda", "sdb", ..., este HD é dividido em partições que correspondem a "sda1", "sda2", ... , estas partições são associadas a pontos de montagem que correspondem a "/", "/home", ...
+Principais Vantagens do Particionamento
+
+    Gerenciamento de espaço em Disco
+
+No linux, são necessárias pelo menos duas partições: "/" e "swap", porém é aconselhável que sejam criadas mais partições para que o sistema fique estável independente de um arquivo de log ser muito grande ou um usuário encher o disco e comprometer o sistema, por isso é aconselhável a separação do "/home" e "/var".
+
+    Diferentes tipos de FileSystem para cada partição
+
+Podemos associar diferentes tipos de FileSystem para cada partição de acordo com nossa necessidade.
+
+    Proteção contra erros do disco
+
+Outra vantagem do particionamento de disco é que caso haja algum tipo de erro com o HD você pode ter problemas apenas com uma partição e não com o disco todo.
+
+    Diferentes níveis de segurança
+
+Você pode setar o nível de segurança por particionamento melhorando assim a segurança de todo o seu sistema.
+
+    Backup facilitado
+
+Com o particionamento você ganha desempenho na hora de um Backup, pois você pode fazer o Backup apenas de uma partição específica.
+swap=É um espaço disponível em disco que serve para ser utilizado como um tipo de memória Ram, caso a memória Ram esteja cheia, para não travar o SO(é recomendado que a área de swap seja o dobro de memoria).
+cat /proc/swaps
+Principais partições no Linux    
+/=É a partição raiz e abaixo seguem os diretórios que devem ser montados dentro dele.
+/etc=Arquivos de configuração do SO.
+/bin=Binários essenciais para todos usuários (ls, cat, mv, cp, etc.).
+/sbin=Binários de administração essenciais do sistema (route, ifup, ini, etc).
+/lib=Bibliotecas essenciais para os binários /bin e /sbin.
+/root=Diretório home do usuário root.
+/opt=Aplicações pré-compiladas adicionais.
+/dev=Arquivos de dispositivos.
+/proc=Sistema de arquivos virtuais do Kernel.
+/sys=Sistema de arquivos do Kernel.
+/mnt=Ponto de montagem do sistema para arquivos temporários.
+/media=Ponto de montagem para media removível (Floppy disk, CD-ROM, Flash disk, etc).
+/srv=Dados de serviços (SMB Share, FTP, NFS, etc).
+/boot=Onde ficam os arquivos do Kernel, Initrd. Os arquivos são carregados em memória pelo GRUB, é comum criar uma partição porque antigamente no sistema LILO era necessário a criação da partição antes do cilindro 1024 do disco, caso contrário o SO não butava, por isso a prática da criação deste diretório.
+/home=Diretório onde ficam guardados os arquivos dos usuários. Aconselhável a separação desta partição para que os usuários não afetem o desempenho do SO e vice versa.
+/var=Dados variáveis como: logs, Banco de Dados, Paginas web, arquivos de impressão, email, crontab, etc.
+/tmp=Arquivos temporários.
+/usr=Partição onde são instalados os programas.
+Sistemas de Particionamento
+MBR=Master Boot Record, que é o modelo de particionamento mais utilizado hoje em dia, porém que tem uma limitação de no máximo 2Tb de dados por partição.
+
+    Limitada a 4 partições primárias que aparecem de "sda1" a "sda4" ou 3 primárias e 1 estendida, por HD.
+    Na partição estendida eu posso ter quantas partições lógicas eu quiser, partindo do "sda5" e devendo estar sempre na sequencia.
+
+GPT=GUID Partition Table, é um tipo de particionamento mais moderno que aceita mais que 2Tb de dados por partição, porém que tem menos ferramentas para se trabalhar gerando uma certa complexidade de uso, esse sistema costuma ser utilizado junto com o EFI que é o substituto da BIOS.
+LVM=Método para alocar os espaços dos discos em volumes lógicos, facilitando assim o redimensionamento dos discos caso necessário, porém é mais complexa para ser montada.
+df=Comando para listar as partições do sistema.
+fdisk=Utilizado para visualizar, criar e gerenciar as partições no sistema.
+cfdisk=Utilizado para visualizar, criar e gerenciar as partições no sistema.
+
+102.2 Instalação e Configuração do Boot Manager
+
+	
+GRUB LEGACY
+	
+GRUB 2
+
+Arquivos de Configuração
+	
+/boot/grub/menu.lst
+/boot/grub/grub.conf/cfg
+	
+/boot/grub/grub.cfg - É recomendado que não seja alterado este arquivo
+/etc/default/grub - É recomendado que seja alterado esse
+/etc/grub.d/ - Onde ficam os scripts que montam o arquivo "/boot/grub/grub.cfg"
+
+Referência ao Disco
+	
+hda1=hd0,0
+hda5=hd0,4
+hdb3=hd1,2
+	
+hda1=hd0,1 ou hd0,msdos1
+hda5=hd0,5
+hdb3=hd1,3
+
+Comandos
+	
+# grub-install /dev/sda
+# grub-install '(hd0)'
+	
+# grub-install <device>
+# update-grub
+# grub-mkconfig -o /boot/grub/grub.cfg
+
+Principais parâmetros
+	
+title "Debian"
+   root (hd0,0)
+   kernel /boot/vmlinuz-4-8.0-46-generic ro root=/dev/sda5
+mem=4096M
+   initrd /boot/initrd-4-8.0-46-generic
+
+
+default=0
+Timeout=15
+	
+menuentry "Debian"{
+   set root=(hd0,1)
+   linux /boot/vmlinuz-4-8.0-46-generic ro root=/dev/sda5
+mem=4096M
+   initrd /boot/initrd-4-8.0-46-generic
+}
+
+GRUB_DEFAULT=0
+GRUB_TIMEOUT=15
+
+Caso o boot de algum problema, temos a opção de setar como boot o bash do linux de duas formas para dar manutenção:
+linux /boot/vmlinuz-4.8.0-46-generic root=UUID=xxxxxxxxxxxx ro quiet splash init=/bin/bash $vt_handoff
+linux /boot/vmlinuz-4.8.0-46-generic root=UUID=xxxxxxxxxxxx ro quiet splash single $vt_handoff
+update-grub --version=Mostra a versão do Grub.
+update-grub=Verifica todos os arquivos de kernel e scripts para montar o "grub.cfg", sem a necessidade de especificar o que será alterado.
+grub-install=Instala as informações do GRUB na MBR.
+grub-mkconfig=Faz a atualização do grub, porém deve ser especificado o arquivo a ser alterado.
+-o=Informar o caminho do arquivo grub.
+É importante fazer um backup do bootloader do disco, que são os primeiros 512bytes: 
+#dd if=/dev/sda of=copia.mbr bs=1 count=512
+if=Origem.
+of=Destino.
+bs=Informa que eu quero pegar byte por byte.
+count=Informa que eu quero 512 bytes.
+
+102.3 Gerenciamento de Bibliotecas Compartilhadas
+
+O Linux pode conter dois tipos de bibliotecas:
+Estática=Ela deve ser incorporada no código da aplicação o que pode resultar em uma lentidão ou sobrecarga pois será carregado todo o código na RAM.
+Dinâmica=Neste caso, posso utilizar a mesma biblioteca em várias aplicações apenas referenciando ela no código sem ter que carrega-la no código de cada aplicação separadamente. Um outro ponto positivo é que no modelo dinâmico, caso haja alguma alteração na biblioteca eu não preciso recompilar o código, por outro lado na estática todo o código tem que ser recompilado.
+ldd "caminho completo do programa"=Comando utilizado para mostrar as bibliotecas utilizadas por determinado programa (biblioteca.so).
+Diretórios padrão:
+/lib
+/usr/lib
+Diretórios secundários:
+Podem ser adicionados novos caminho de bibliotecas nos seguintes arquivos:
+/etc/ld.so.conf=Arquivo principal, onde é informado os caminhos para as bibliotecas.
+/etc/ld.so.conf.d=Pasta onde podem ser incluídos arquivos de caminhos de bibliotecas.
+/etc/ld.so.cach=Aquivo final, compilado.
+ldconfig=Usado para recompilar o arquivo "ld.so.cach".
+-p=Mostra as bibliotecas ativas no momento.
+Caso o usuário não seja root, ele pode adicionar uma variável "LD_LIBRARY_PATH" com o caminho da biblioteca que você deseja carregar, de forma que ela ficará apenas ativa na sua sessão.
+
+102.4 Gerenciamento de Pacotes Debian
+
+﻿﻿﻿Padrões de pacotes:
+
+
+	Padrão Debian	Padrão RPM/RedHat
+Arquivos
+	.deb	.rpm
+Gerenciador de Pacotes	# dpkg	# rpm
+Gerenciador + Repositório	# apt-get	# yum
+Outros comandos	
+# dpkg-reconfigure
+# apt-cach
+# dselect
+# aptitude
+# alien
+	
+# yumdownloader
+# rmp2cpio
+Nome do Arquivo	
+name_version.revision-debiancodename_architecture.deb
+Ex: samba_3.6.6-6+deb7u12_i386.deb
+	
+name-version-release.arch.rpm
+Ex: samba-4.1.12-2.1.x86_64.rpm
+
+
+Conceitos Importantes:
+* É recomendado que cada sistema utilize um único tipo de gerenciamento de pacotes, para evitar inconsistências.
+* Os gerenciamentos de pacotes mantém uma base de dados relacionando todos os pacotes, seus arquivos e dependências.
+
+dpkg=Gerenciador de pacotes do Debian, não depende de repositórios, porém o pacote tem que ser baixado para poder instala-lo.
+-l ou --get-selections=Lista os pacotes instalados.
+-I=Mostra informações do pacote.
+--contents=Mostra os arquivos que tem dentro do pacote.
+-i=Instala o pacote.
+-s=Mostra o status do pacote.
+-S=Mostra a origem do arquivo.
+-r=Remove o pacote, porém, matem arquivos de configurações informações na base de dados.
+-P ou --purge=Remove completamente o pacote.
+dpkg-reconfigure=Utilizado para reconfigurar pacotes que foram configurados na instalação do sistema, através de um interface.
+aptitude, apt e apt-get=Depende de um repositório onde conste URL's que possam ser consultadas para buscar pacotes e suas dependências(repositório:/etc/apt/source.list).
+update=Atualiza sua base de dados, mas não faz o download.
+upgrade=Faz o download e atualiza os pacotes instalados no sistema de acordo com a base de dados.
+dist-upgrade=Mesma coisa que o upgrade, porém se alguma atualização puder causar algum dano ou incompatibilidade, ele barra automaticamente.
+install=Instala um pacote.
+remove=Remove o pacote, porém, matem arquivos de configurações informações na base de dados.
+purge=Remove completamente o pacote.
+check=Faz uma checagem na base de dados para averiguar se está tudo certo.
+-d ou --download-only install=Faz o download do pacote.deb em /var/cache/apt/archives.
+apt-cache=Mostra os pacotes disponíveis na sua base de dados.
+dselect=Uma interface para gerenciamento de pacotes, contendo todas opções.
+alien=Manipula pacotes de outros gerenciadores de pacotes, como por exemplo rpm, faz conversão e instala.
+
+102.5 Gerenciamento de Pacotes RPM e YUM
+
+rpm=Gerenciador de pacotes RedHat, não depende de repositórios, porém o pacote tem que ser baixado para poder instala-lo e ele não instala as dependências automaticamente.
+-q=Modulo de consulta.
+-a=Todos os pacotes.
+-i=Mostra informações do pacote.
+-l=Mostra as dependências do pacote.
+-c=Mostra os arquivos de configuração do pacote.
+-d=Mostra os arquivos de documentação.
+-f=Mostra de qual pacote o arquivo é.
+-p=Utilizado para ver um pacote.rpm.
+-i=Instala o pacote.
+-V=Verbose.
+-h=hash, utilizado para mostrar a evolução da instalação.
+--nodeps=Utilizado para forçar a instalação no caso dela depender de outros pacotes e não ter.
+--force=Força a instalação.
+--test=Testa a instalação, porém não à instala.
+-U=Atualiza o pacote e caso ele não esteja instalado, ele instala.
+-e=Remove o pacote.
+-V=Verifica se o pacote está instalado corretamente, caso tenha algum problema ele printa na tela.
+﻿--checksig=Verifica a integridade da assinatura do pacote.
+yum=Depende de repositórios que possam ser consultados para buscar os pacotes e suas dependências (repositório:/etc/yum.repos.d/arquivos com os repositórios.repo)(Arquivo de configuração do yum = /etc/yum.conf).
+check=Faz uma checagem na base de dados para averiguar se está tudo certo.
+install=Instala um pacote.
+--downloadonly=Faz o download do pacote.rpm em CAMINHO ou --downloaddir=caminho para salvar.
+yumdownloader=Faz o download do pacote.rpm no diretório atual.
+update=Faz o download e atualiza os pacotes instalados no sistema.
+--obsolete=Apaga pacotes obsoletos.
+upgrade=Faz o download e atualiza os pacotes instalados no sistema e apaga pacotes obsoletos.
+check-update=Atualiza sua base de dados, mas não faz o download.
+list=Lista os pacotes instalados.
+search=Mostra os pacotes relacionados ao pacote procurado.
+remove ou erased=Remove o pacote.
+
+
