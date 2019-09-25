@@ -1,146 +1,146 @@
 109.1 Fundamentos de Protocolos de Internet
 
-TCP/IP=É um conjunto de protocolos utilizados para comunicação entre computadores, na internet principalmente.
-IP=Protocolo responsável pelo o endereçamento lógico.
-IPV4=É formado por 32 bits, separados por 4 grupos de 8 bits representados de maneira decimal (Aproximadamente 4 Bi de IP's).
-0.0.0.0=00000000.00000000.00000000.00000000
-255.255.255.255=11111111.11111111.11111111.11111111
-192.168.10.20=11000000.10101000.00001010.00010100
-                          Contagem de Bits
-  1         1         1         1         1         1         1         1
-2^7     2^6     2^5     2^4     2^3     2^2     2^1     2^0
-128     64      32       16        8         4         2         1       = 255 bits (Soma)
-CIDR=É a quantidade de Bits ativos, ou rede, mais conhecido como "/32".
-Endereço de Rede=Sempre o primeiro IP da Rede.
-Endereço de Broadcast=Sempre o ultimo IP da Rede.
-Gateway=Utilizado para comunicação entre duas redes que não se conversão.
-O endereçamento é formado por 3 classes de IP's, e a Loop-back que é utilizada como protocolo interno para testes (Própria máquina):
-IPs Privados=São IP's que não são vistos pela internet, são IP's utilizados por empresas em redes privadas, o mesmo IP pode existir em redes distintas, porém não na mesma rede.
-Classe	Primeiro Octeto	Range	IPs Privados
-LoopBack	127	127.0.0.0	
-A	1 - 126	1.0.0.0 - 126.255.255.255	10.0.0.0 - 10.255.255.255
-B	128 - 191	128.0.0.0 - 191.255.255.255	172.16.0.0 - 172.31.255.255
-C	192 - 223	192.0.0.0 - 223.255.255.255	192.168.0.0 -192.168.255.255
+  TCP/IP=É um conjunto de protocolos utilizados para comunicação entre computadores, na internet principalmente.
+  IP=Protocolo responsável pelo o endereçamento lógico.
+    IPV4=É formado por 32 bits, separados por 4 grupos de 8 bits representados de maneira decimal (Aproximadamente 4 Bi de IP's).
+      0.0.0.0=00000000.00000000.00000000.00000000
+      255.255.255.255=11111111.11111111.11111111.11111111
+      192.168.10.20=11000000.10101000.00001010.00010100
+                                Contagem de Bits
+        1         1         1         1         1         1         1         1
+      2^7     2^6     2^5     2^4     2^3     2^2     2^1     2^0
+      128     64      32       16        8         4         2         1       = 255 bits (Soma)
+      CIDR=É a quantidade de Bits ativos, ou rede, mais conhecido como "/32".
+      Endereço de Rede=Sempre o primeiro IP da Rede.
+      Endereço de Broadcast=Sempre o ultimo IP da Rede.
+      Gateway=Utilizado para comunicação entre duas redes que não se conversão.
+      O endereçamento é formado por 3 classes de IP's, e a Loop-back que é utilizada como protocolo interno para testes (Própria máquina):
+      IPs Privados=São IP's que não são vistos pela internet, são IP's utilizados por empresas em redes privadas, o mesmo IP pode existir em redes distintas, porém não na mesma rede.
+      
+      Classe	Primeiro Octeto	Range	IPs Privados
+      LoopBack	127	127.0.0.0	
+      A	1 - 126	1.0.0.0 - 126.255.255.255	10.0.0.0 - 10.255.255.255
+      B	128 - 191	128.0.0.0 - 191.255.255.255	172.16.0.0 - 172.31.255.255
+      C	192 - 223	192.0.0.0 - 223.255.255.255	192.168.0.0 -192.168.255.255
 
-Classe	Primeiro Octeto	Range	Máscara Padrão
-LoopBack	127	127.0.0.0	
-A	1 - 126	1.0.0.0 - 126.255.255.255	255.0.0.0 / 8
-B	128 - 191	128.0.0.0 - 191.255.255.255	255.255.0.0 / 16
-C	192 - 223	192.0.0.0 - 223.255.255.255	255.255.255.0 / 24
+      Classe	Primeiro Octeto	Range	Máscara Padrão
+      LoopBack	127	127.0.0.0	
+      A	1 - 126	1.0.0.0 - 126.255.255.255	255.0.0.0 / 8
+      B	128 - 191	128.0.0.0 - 191.255.255.255	255.255.0.0 / 16
+      C	192 - 223	192.0.0.0 - 223.255.255.255	255.255.255.0 / 24
 
-
-IPV6=Novo padrão de endereçamento IP. É formado por 128 bits, separados por 8 grupos de 16 bits, representados de maneira hexadecimal em conjunto de 4.
-Redução de IPV6:
-2001:0db8:85a3:0000:0000:0000:0000:7344
-2001:0db8:85a3:0:0:0:0:7344
-2001:0db8:85a3::7344
-2001:0db8:85a3:0000:0000:1319:0000:7344
-2001:0db8:85a3:0:0:1319:0:7344
-2001:0db8:85a3::1319:0:7344
-Tipos de Endereços:
-Unicast=Identifica uma única interface.
-Multicast=Identifica um conjunto de interfaces.Um pacote é enviado para cada interface.
-Anycast=Identifica um conjunto de interfaces.Um pacote é enviado para uma única interface, normalmente a mais próxima.
-TCP=Transmission Control Protocol, garante a entrega dos pacotes na ordem correta, a maioria dos serviços o utilizam (Ex.: FTP, SMTP, HTTP).
-UDP=User Datagram Protocol, não garante a entrega e nem a ordem correta dos pacotes, porém tem uma performance muito melhor que o TCP (Ex.: DNS, NFS, NTP).
-ICMP=Internet Control Message Protocol, utilizado para controle entre elementos, através de "ping" ou "traceroute".
-Controle de Volume de Tráfego
-Detecção de Destinos não Atingíveis
-Redirecionamento de Rotas
-Verificação de Status de Hosts Remotos
-Portas=Dentro de um IP eu posso ter vários serviços, e estes serviços são identificados através de portas que vão até 65535, as primeiras 1024 são reservadas para serviços conhecidos.
-Principais portas:
-Portas               Serviço
-20 e 21              FTP
-22                       SSH
-23                       Telnet
-25 e 465            SMTP e SMTPS
-53                       DNS
-67 e 68              DHCP
-80 e 443            HTTP e HTTPS
-110 e 995          POP3 e POP3S
-123                      NTP
-139                      Netbios
-143 e 993          IMAP e IMAPS
-161 e 162          SNMP
-389 e 636          LDAP e LDAPS
+  IPV6=Novo padrão de endereçamento IP. É formado por 128 bits, separados por 8 grupos de 16 bits, representados de maneira hexadecimal em conjunto de 4.
+    Redução de IPV6:
+      2001:0db8:85a3:0000:0000:0000:0000:7344
+      2001:0db8:85a3:0:0:0:0:7344
+      2001:0db8:85a3::7344
+      2001:0db8:85a3:0000:0000:1319:0000:7344
+      2001:0db8:85a3:0:0:1319:0:7344
+      2001:0db8:85a3::1319:0:7344
+    Tipos de Endereços:
+      Unicast=Identifica uma única interface.
+      Multicast=Identifica um conjunto de interfaces.Um pacote é enviado para cada interface.
+      Anycast=Identifica um conjunto de interfaces.Um pacote é enviado para uma única interface, normalmente a mais próxima.
+  TCP=Transmission Control Protocol, garante a entrega dos pacotes na ordem correta, a maioria dos serviços o utilizam (Ex.: FTP, SMTP, HTTP).
+  UDP=User Datagram Protocol, não garante a entrega e nem a ordem correta dos pacotes, porém tem uma performance muito melhor que o TCP (Ex.: DNS, NFS, NTP).
+  ICMP=Internet Control Message Protocol, utilizado para controle entre elementos, através de "ping" ou "traceroute".
+    Controle de Volume de Tráfego
+    Detecção de Destinos não Atingíveis
+    Redirecionamento de Rotas
+    Verificação de Status de Hosts Remotos
+  Portas=Dentro de um IP eu posso ter vários serviços, e estes serviços são identificados através de portas que vão até 65535, as primeiras 1024 são reservadas para serviços conhecidos.
+    Principais portas:
+      Portas               Serviço
+      20 e 21              FTP
+      22                       SSH
+      23                       Telnet
+      25 e 465            SMTP e SMTPS
+      53                       DNS
+      67 e 68              DHCP
+      80 e 443            HTTP e HTTPS
+      110 e 995          POP3 e POP3S
+      123                      NTP
+      139                      Netbios
+      143 e 993          IMAP e IMAPS
+      161 e 162          SNMP
+      389 e 636          LDAP e LDAPS
 
 109.2 Configuração Básica de Redes
 
-NetworkManager=Serviço que configura automaticamente toda a configuração de rede em caso de Linux com interface gráfica.
-Principais arquivos de configuração de rede:
-/etc/services=Mostra todas as portas e para que elas servem.
-/etc/hostname=Nome da máquina.
-/etc/hosts=Arquivo de resolução de IP's para Nomes dados aos IP's.
-/etc/networks=Arquivo de resolução de Redes para Nomes dados às Redes.
-/etc/nsswitch.conf=Arquivo onde é determinado a ordem de busca de determinadas informações, como passwd, shadow, hosts, networks, etc.
-/etc/resolv.conf=Arquivo de configuração do servidor DNS da máquina.
-Configuração fixa de REDE:
-DEBIAN
-/etc/network/=Onde são configuradas as informações de rede para que fiquem fixas ao reiniciar a máquina.
-Interfaces=Principal arquivo de configuração (O serviço de rede deve ser reiniciado para aplicar as informações ou utilizar ifup e ifdown).
-auto "nome interfaces"              Interfaces que irão subir automaticamente após a maquina ser reiniciada.
-inface "Intercafe" inet "static"
-    address "IP"
-    netmask "Mascara de Rede"
-    gateway "IP do Gateway"
-    network "IP"                              Opcional
-    broadcast "IP"                          Opcional
-inface "Intercafe" inet "dhcp"
-REDHAT
-/etc/sysconfig/=Onde são configuradas as informações de rede para que fiquem fixas ao reiniciar a máquin.
-network-scripts/=Pasta onde ficam as configurações de rede (ifcfg-"interface").
-DEVICE="Interface"
-HWADDR="MacAddres"             Opcional
-BOOTPROTO="static or dhcp"
-IPADDR="IP"
-NETMASK="Mascara de Rede"
-ONBOOT="Yes or No"
-network=Arquivo de configuração do Gateway
-NETWORKING="Yes"
-GATEWAY="IP"
+  NetworkManager=Serviço que configura automaticamente toda a configuração de rede em caso de Linux com interface gráfica.
+    Principais arquivos de configuração de rede:
+      /etc/services=Mostra todas as portas e para que elas servem.
+      /etc/hostname=Nome da máquina.
+      /etc/hosts=Arquivo de resolução de IP's para Nomes dados aos IP's.
+      /etc/networks=Arquivo de resolução de Redes para Nomes dados às Redes.
+      /etc/nsswitch.conf=Arquivo onde é determinado a ordem de busca de determinadas informações, como passwd, shadow, hosts, networks, etc.
+      /etc/resolv.conf=Arquivo de configuração do servidor DNS da máquina.
+      Configuração fixa de REDE:
+        DEBIAN
+          /etc/network/=Onde são configuradas as informações de rede para que fiquem fixas ao reiniciar a máquina.
+            Interfaces=Principal arquivo de configuração (O serviço de rede deve ser reiniciado para aplicar as informações ou utilizar ifup e ifdown).
+              auto "nome interfaces"              Interfaces que irão subir automaticamente após a maquina ser reiniciada.
+              inface "Intercafe" inet "static"
+                  address "IP"
+                  netmask "Mascara de Rede"
+                  gateway "IP do Gateway"
+                  network "IP"                              Opcional
+                  broadcast "IP"                          Opcional
+              inface "Intercafe" inet "dhcp"
+        REDHAT
+          /etc/sysconfig/=Onde são configuradas as informações de rede para que fiquem fixas ao reiniciar a máquin.
+            network-scripts/=Pasta onde ficam as configurações de rede (ifcfg-"interface").
+              DEVICE="Interface"
+              HWADDR="MacAddres"             Opcional
+              BOOTPROTO="static or dhcp"
+              IPADDR="IP"
+              NETMASK="Mascara de Rede"
+              ONBOOT="Yes or No"
+            network=Arquivo de configuração do Gateway
+              NETWORKING="Yes"
+              GATEWAY="IP"
 
 109.3 Resolução de Problemas de Redes
 
-ifconfig=Mostra as interfaces de rede, os IP's utilizados por elas e suas configurações.
--a=Mostra todas interfaces, incluindo as inativas.
-nome_interface down=Derruba uma interface.
-nome_interface up=Sobe uma interface.
-nome_interface IP=Seta um IP específico para esta interface.
-nome_interface netmask mascara=Define uma mascara de rede específica.
-route=Mostra as rotas da máquina
--n=Mostra informações mais claras.
-add default gw "IP Gateway" dev "Interface de Rede"=Adiciona uma rota padrão.
-add -net "IP" gw "IP Gateway" dev "Interface de Rede"=Adiciona uma rota para o IP ou range de IP's.
-del default=Retira a rota padrão.
-ip=Comando parecido com o ifconfig e o route.
-link show=Mostra as interfaces.
-address show=Mostra as interfaces e os IP's atrelados a elas, parecido com o ifconfig.
-route show=Mostra as rotas da máquina, parecido com o route.
-addres flush dev "interface"=Baixa a interface retirando o IP.
-addres add "IP" dev "Interface"=Adiciona um IP a interface especificada.
-neight show=Mostra os IP's que a máquina já conversou.
-dhclient "interface"=Ele pega um IP do DHCP que está configurado para essa interface.
-ifup "interface"=Sobe uma interface que esteja configurada.
-ifdown "interface"=Baixa uma interface.
-traceroute=Mostra a rota por onde o IP de origem passa até chegar no destino (Por padrão utiliza o protocolo UDP).
--I=Faz os saltos utilizando o protocolo ICMP.
-tracepath=Faz a mesma coisa que o "traceroute".
-host=Comando utilizado para mostrar a resolução do host de um site ou uma máquina de acordo com o seu DNS.
-nslookup=Mostra a mesma coisa que o "host", porém mais detalhado.
-dig=Mostra a mesma coisa que o "host", porém mais detalhado.
-netstat=Mostra todas as portas que estão abertas na sua máquina.
--n=Não resolve o IP.
--al=Mostra tudo.
--p=Mostra os processos que estão abrindo as portas.
--t=Mostra conexões TCP.
--r=Mostra as rotas da máquina.
-telnet=Utilizado para conectar em alguma máquina ou para teste de portas.
-netcat ou nc=Faz a mesma coisa que o "telnet", porém com mais opções.
--l=Listen, deixa uma porta ouvindo.
--p=Informar a porta que irá ficar ouvindo.
-tcpdump=Utilizado para monitoramento de rede.
+  ifconfig=Mostra as interfaces de rede, os IP's utilizados por elas e suas configurações.
+    -a=Mostra todas interfaces, incluindo as inativas.
+    nome_interface down=Derruba uma interface.
+    nome_interface up=Sobe uma interface.
+    nome_interface IP=Seta um IP específico para esta interface.
+    nome_interface netmask mascara=Define uma mascara de rede específica.
+  route=Mostra as rotas da máquina
+    -n=Mostra informações mais claras.
+    add default gw "IP Gateway" dev "Interface de Rede"=Adiciona uma rota padrão.
+    add -net "IP" gw "IP Gateway" dev "Interface de Rede"=Adiciona uma rota para o IP ou range de IP's.
+    del default=Retira a rota padrão.
+  ip=Comando parecido com o ifconfig e o route.
+    link show=Mostra as interfaces.
+    address show=Mostra as interfaces e os IP's atrelados a elas, parecido com o ifconfig.
+    route show=Mostra as rotas da máquina, parecido com o route.
+    addres flush dev "interface"=Baixa a interface retirando o IP.
+    addres add "IP" dev "Interface"=Adiciona um IP a interface especificada.
+    neight show=Mostra os IP's que a máquina já conversou.
+  dhclient "interface"=Ele pega um IP do DHCP que está configurado para essa interface.
+  ifup "interface"=Sobe uma interface que esteja configurada.
+  ifdown "interface"=Baixa uma interface.
+  traceroute=Mostra a rota por onde o IP de origem passa até chegar no destino (Por padrão utiliza o protocolo UDP).
+    -I=Faz os saltos utilizando o protocolo ICMP.
+  tracepath=Faz a mesma coisa que o "traceroute".
+  host=Comando utilizado para mostrar a resolução do host de um site ou uma máquina de acordo com o seu DNS.
+  nslookup=Mostra a mesma coisa que o "host", porém mais detalhado.
+  dig=Mostra a mesma coisa que o "host", porém mais detalhado.
+  netstat=Mostra todas as portas que estão abertas na sua máquina.
+    -n=Não resolve o IP.
+    -al=Mostra tudo.
+    -p=Mostra os processos que estão abrindo as portas.
+    -t=Mostra conexões TCP.
+    -r=Mostra as rotas da máquina.
+  telnet=Utilizado para conectar em alguma máquina ou para teste de portas.
+  netcat ou nc=Faz a mesma coisa que o "telnet", porém com mais opções.
+    -l=Listen, deixa uma porta ouvindo.
+    -p=Informar a porta que irá ficar ouvindo.
+  tcpdump=Utilizado para monitoramento de rede.
 
 109.4 Configuração de Cliente DNS
 
-Conteúdo exposto acima.
+  Conteúdo exposto acima.
