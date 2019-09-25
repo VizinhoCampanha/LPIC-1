@@ -1,0 +1,123 @@
+
+105.1 Customização e Uso do Ambiente Shell
+
+source ou . "script=Roda o script no bash atual sem ter que abrir uma nova seção como é feito com o ./.
+alias=Utilizado para criar um alias ou para visualizar os alias ativos.
+function "name" {comandos; comandos}=Utilizado para criar uma função com diversos parâmetros.
+lista=(valor1 valor2 valor3)=Utilizado para armazenar vários valores em uma variável ("array").
+echo ${lista[0]}=Mostra o valor atribuído a variável lista na primeira posição.
+/etc/profile=Arquivo de configuração global para logins.
+/etc/bash.bashrc=Arquivo de configuração global para customização do bash.
+/etc/inputrc=São configuração globais do terminal.
+/etc/skel/=Nesse diretório fica toda a estrutura que será incorporada a novos
+~/.bash_profile ou ~/.bash_login ou ~/.profile=Arquivo de configuração do usuário para logins.
+~/.bashrc=Arquivo de configuração do usuário para customização do bash.
+~/.bash_logout=Arquivo de configuração para customização do logout do usuário.
+~/.inputrc=São configuração do terminal do usuário.
+
+105.2 Customização e Criação de Scripts Simples
+
+Geralmente um script tem o nome "nome_script.sh" e deve ter sua permissão alterada para execução.
+exec ./script=Opção utilizada para executar o script e fechar a tela.
+#! /bin/bash=É inserido no início de um script para que o mesmo entenda o tipo de bash que deve ser utilizado nesse script.
+$0=Retorna o nome do script.
+$1 $2...=Utilizado para passar parâmetros.
+$#=Informa quantos parâmetros foram passados para o script.
+read "Variável"=Solicita na execução do script que usuário digite um valor que ficará armazenado na "Variável".
+`comando` ou $(comando)=Utilizado para executar um comando dentro de um script.
+TESTE:
+
+-f "Arquivo"= Verifica se o arquivo indicado existe e é um arquivo regular.
+
+-d "Arquivo"= Verifica se o caminho indicado é um diretório existente.
+
+-r "Arquivo"= Verificar se há permissão de leitura.
+
+-w "Arquivo"= Verificar se há permissão de escrita.
+
+-x "Arquivo"= Verificar se há permissão de execução.
+
+-s "Arquivo"= Verifica se o tamanho do arquivo é maior que 0.
+
+-n "$VAR1"= Usado com variáveis, verifica se o tamanho do conteúdo da variável é diferente de zero (nonzero).
+
+-z "$VAR1"= Usado com variáveis, verifica se o tamanho do conteúdo da variável é zero.
+
+String1 = String2= Compara se as duas strings são iguais.
+
+String1 != String2= Verifica se as duas strings são diferentes.
+
+Valor1 -eq Valor2= Verdadeiro se os 2 valores forem iguais (equal).
+
+Valor1 -ne Valor2= Verdadeiro se os 2 valores forem diferentes (not equal).
+
+Valor1 -gt Valor2= Verdadeiro se o Valor1 for maior que Valor2 (greater than).
+
+Valor1 -ge Valor2= Verdadeiro se o Valor1 for maior ou igual que Valor2 (greater or equal).
+
+Valor1 -lt Valor2= Verdadeiro se o Valor1 for menor que Valor2 (less than).
+
+Valor1 -le Valor2= Verdadeiro se o Valor1 for menor ou igual que Valor2 (less or equal).
+
+!= A presença da exclamação indica a negação da expressão a seguir.
+IF:
+if [ expressão ]; then  ou  if teste expressão ; then
+     else
+fi
+CASE:
+case $var in
+     0)
+              "comando"
+     ;;
+     1|2|3)
+              "comando"
+     ;;
+     *)
+              "comando"
+esac
+FOR:
+for $var in 1 2 3 or n
+do
+resultado
+done
+WHILE: Enquanto for verdadeiro
+while [ expressão ] ou teste expressão
+do
+resultado
+done
+﻿UNTIL: Enquanto for falso
+while [ expressão ] ou teste expressão
+do
+resultado
+done
+seq "numero"=Gera uma sequencia de números até o número informado.
+expr=Utilizado para executar operações aritméticas.
+
+105.3 Gerenciamento de Dados SQL
+
+mysqlshow=Mostra os Banco de Dados disponíveis.
+mysql "nome _DB"=Entra no Banco de Dados escolhido.
+show tables=Mostra as tabelas.
+describe "nome_tabela"=Mostra a estrutura da tabela.
+SELECT:
+select "campos" ou "* - para todos campos" from "nome_tabela"=Lista todos os valores
+select count(*) from "nome_tabela"=Conta quantos registros têm.
+select * from "nome_tabela" limit "valor"=Limita a saída do resultado.
+select * from "nome_tabela" where "expressão"=Mostra apenas os resultados que derem match.
+select "nome_campo" as "NOVO_NOME" from "nome_tabela"=Renomeia a saída do campo.
+select "tabela_1"."campo" from "tabela_1" join "tabela_2" on "tabela_1"."campo"="tabela_2"."campo"=Faz o join de duas tabelas.
+%=Este sinal no SQL é equivalente ao * no Linux.
+order by "nome_campo"=Ordena a tabela por este campo.
+order by "nome_campo" desc=Ordena de forma decrescente a tabela por este campo.
+group by "nome_campo"=Agrupa as informações por um campo.
+INSERT:
+insert into "tabela" ("campo_1","campo_2") values ("valor_campo_1","valor_campo_2")=Insere valores em uma tabela.
+insert into "tabela" set "campo_1"="valor_campo_1","campo_2"="valor_campo_2"=Insere valores em uma tabela.
+UPDATE:
+update "tabela" set "campo_1"="valor_campo_1" where "condição"=Faz uma alteração em uma tabela.
+DELETE:
+delete from "tabela" where "condição"=Deleta valores em uma tabela.
+
+
+
+
