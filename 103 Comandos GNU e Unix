@@ -1,0 +1,277 @@
+103.1 Trabalhando na linha de comando
+
+shell=Interface entre o usuário e o Linux / Ambiente de programação.
+tipos de shell=bash(Evolução do sh),sh,csh,ksh.
+echo=Mostra na tela o que for digitado.
+type=Mostra o tipo do comando, se é externo ou interno(faz parte do bash).
+$PATH=Variável onde o bash procura programas externos(variável de caminho de programas).
+pwd=Mostra o diretório onde você está.
+cd=Muda de diretório.
+ls=Mostra o conteudo do diretórios.
+Variaveis de ambiente:
+variável local==> NOME_VARIAVEL=valor
+variável global=> export NOME_VARIAVEL=valor ou export NOME_VARIAVEL (caso ela já tenha sido declarada).
+Só funciona para os processos filhos de um bash.
+set=Mostra todas as variáveis: locais e exportadas.
+env=Mostra apenas as variáveis globais e pode mudar o valor da variável temporariamente para a execução de um SCRIPT:
+          env TESTE=Ubuntu ./Script_Variavel.sh
+unset=Remove a variável.
+Variáveis de sistema importantes:
+$HISTFILE=Arquivo de histórico de comandos.
+$HISTFILESIZE=Tamanho máximo do arquivo.
+$HISTSIZE=Máximo de linhas do arquivo.
+$HOME=Mostra o home do meu usuário local.
+$HOSTNAME=Nome da maquina.
+$HOSTTYPE=Tipo de sistema.
+$LOGNAME e $USER=Quem fez o login nesta sessão.
+Variáveis de ambiente definidas dinamicamente:
+$$=Mostra o PID do processo atual
+$!=Mostra o PID do ultimo processo executado em backgroud.
+$?=Mostra o código de retorno do ultimo processo executado.
+         Códigos de retorno:
+0=Sucesso(diferente de 0 é erro).
+1 e 2=Erro(podem aparecer outros).
+~=Mostra o home do usuário atual.
+~usuario=Mostra o home do usuário.
+;=Utilizado para executar comandos sequencialmente independente do código de retorno.
+          clear ; date ; ls
+&&=Utilizado para executar comandos sequencialmente apenas se o código de retorno for 0.
+||=Utilizado para executar comandos sequencialmente apenas se o código de retorno for <> 0.
+history=Mostra os ultimos comandos executados.
+          !!=Repete o ultimo comando executado.
+          !numero do comando=Executa o comando do history que tenha este numero.
+          !string=Executa o ultimo comando que tenha a string.
+history -c=Limpa o histórico.
+.bash_history=Onde ficam armazenado os comandos de cada usuário, porém só é atualizado quando a sessão é fechada.
+Ctrl + r=Pesquisa no histórico de comandos.
+man comando=Detalha o comando.
+man -k "string" e apropos=Mostra quais comandos contem aquela string.
+whatis comando=Mostra a descrição do comando.
+uname=Mostra informações do SO.
+alias=Atalhos de comandos que ficam na memória, para permanecerem em futuras sessões deve ser adicionado o alias no arquivo "profile".
+
+103.2 Aplicando filtros a textos e arquivos
+
+cat=Mostra na tela o conteúdo de um arquivo.
+tac=Mostra na tela o conteúdo de um arquivo, porém, de trás para frente (Inverso do "cat").
+head=Mostra na tela as primeiras linhas de um arquivo (por padrão 10).
+tail=Mostra na tela as ultimas linhas de um arquivo (por padrão 10). A opção "-f" serve para ver as ultimas linhas do arquivo e permanecer nele esperando por atualizações, útil para ver logs.
+less=Exibe o conteúdo de um arquivo em forma de paginação.
+wc=Conta quantidade de linhas (-l), de palavras (-w) e de caracteres (-c).
+nl=Numera as linhas de um arquivos que tenham algum conteúdo.
+sort=Ordena um arquivo.
+-r=Inverte a ordem.
+-k=Informa o número da coluna a ser organizada.
+-t=Informa o separador dos campos (por padrão é espaço).
+-u=Mostra valores únicos em um arquivo.
+uniq=Mostra valores únicos em um arquivo.
+-d=Mostra o que está duplicado.
+-c=Conta quantas vezes cada linha aparece.
+expand=Troca "Tab" por "Espaços" (1Tab=8Espaços).
+-t=Altera a quantidade de espaços.
+unexpand=Troca "Espaços" por "Tab" (8Espaços=1Tab), porém para que ele olhe a linha inteira tem que ser utilizada a opção -a, se não ele irá olhar apenas o início da linha.
+-t=Altera a quantidade de espaços.
+od=Altera o valor do arquivo para octal ou outros formatos.
+join=Combina 2 arquivos através de um índice.
+paste=Combina 2 arquivos linha a linha.
+split=Divide um arquivo em vários(por padrão 1000 linhas).
+-l=Divide por linhas.
+-b=Divide por bytes.
+tr=Substitui ou altera algum conteúdo de texto.
+fmt=Formata uma saída de texto.
+pr=Prepara arquivo para impressão.
+cut=Corta partes de um texto.
+-c=Delimita um range para o corte.
+-d=Delimitador de campos.
+-f=Defini os campos a serem exibidos.
+sed=Utilizado para procura e substituição, deletar parte de um texto ou como expressão regular.
+Substituição:
+sed 's/string procurada/string de substituição/' (Troca apenas a primeira ocorrência encontrada na linha).
+sed 's/string procurada/string de substituição/g' (Troca todas ocorrências encontradas pois o "g" significa global).
+Deleção:
+sed '3-5 d' (Deleta da linha 3 a 5).
+sed '/string/d' (Deleta as linhas que encontrar a string).
+
+103.3 Gerenciamento básico de arquivos
+
+Caracteres especiais:
+*=Mostra tudo que estiver depois do "*".
+?=É obrigatório ter um carácter no lugar do "?".
+[lista de caracteres]=É obrigatório ter um dos caracteres da lista.(Caso eu utilize o "!" antes da lista, significa que não quero que tenha os caracteres da lista)
+{Strings}=Mostra tudo que tenha a String.
+file=Mostra o tipo de arquivo que é.
+cp=Copia arquivos ou diretórios.
+-i=Caso haja outro arquivo ou diretório com o mesmo nome, ele pergunta se você deseja substitui-lo.
+-p=Mantem as permissões e data de atualização do arquivo ou diretório.
+-r=Utilizado para copiar o diretório e tudo que esta a baixo dele.
+mv=Move arquivos ou diretórios.
+-i=Caso haja outro arquivo ou diretório com o mesmo nome, ele pergunta se você deseja substitui-lo.
+-p=Mantem as permissões e data de atualização do arquivo ou diretório.
+-r=Utilizado para mover o diretório e tudo que esta a baixo dele.
+touch=Cria um arquivo em branco ou altera sua data e hora de atualização.
+rm=Remove um arquivo ou diretório.
+rmdir=Remove apenas diretórios que estejam vazios.
+mkdir=Cria diretórios.
+find=Comando de busca.
+Agrupamento:
+tar=Agrupa arquivos (para agrupar e compactar junto podem ser utilizadas as opções: z(gzip), j(bzip2), J(xz)).
+-c=Cria agrupamento de arquivos.
+-x=Extrai arquivos agrupados.
+-t=Lista agrupamento.
+-f=Opção para apontar um arquivo.
+-v=Verbose.
+cpio=Agrupa arquivos, porém necessita que seja passado para ele uma lista com os arquivos que serão agrupados.
+-d=Executa o comando recursivamente.
+-o=Utilizado para agrupar.
+find ./ -name "arquivos" | cpio -o > "nome do arquivo"
+-i=Utilizado para desagrupar.
+cpio -i < "nome do arquivo" ("-i" é utilizado para desagrupar)
+Compactação:
+gzip:
+gzip "nome do arquivo" (a opção "-k" mantem o arquivo origem)
+bzip2:
+bzip2 "nome do arquivo" (a opção "-k" mantem o arquivo origem)
+xz:
+xz "nome do arquivo" (a opção "-k" mantem o arquivo origem)
+Descompactação:
+gzip:
+gzip -d "nome do arquivo .tar.gz"
+gunzip "nome do arquivo .tar.gz"
+unzip "nome do arquivo .tar.gz"
+bzip2:
+bzip2 -d"nome do arquivo .tar.bz2"
+bunzip "nome do arquivo .tar.bz2"
+xz:
+xz -d "nome do arquivo .tar.xz"
+unxz "nome do arquivo .tar.xz"
+dd=Utilizado para copiar uma partição inteira.
+dd if="partição que deseja copiar" of="arquivo, imagem ou partição de saída"
+
+103.4 Fluxos, Pipes e Redirecionamentosps
+
+
+Entradas e Saídas padrão:
+Entrada padrão (STDIN-0)=A entrada padrão é o teclado.
+Saída padrão (STDOUT-1)=A saída padrão é a tela.
+Saída de erro padrão (STDERR-2)=A saída de erro padrão é a tela.
+>=O sinal de maior redireciona a saída padrão para um arquivo. Caso ele exista seus dados serão substituídos, caso ele não exista ele será criado com os dados encaminhados pela saída padrão.
+>>=Dois sinais de maior também redireciona a saída padrão para um arquivo, porém caso o arquivo exista, ao invés dele substituir os dados do arquivo ele adiciona dados no final do arquivo, caso ele não exista ele será criado com os dados encaminhados pela saída padrão.
+2> ou 2>>=São equivalentes a saída padrão porém são saídas padrão de erro.
+> arquivo1 2> arquivo2=Neste caso a saída padrão vai para um arquivo1 e a saída de erro para outro arquivo2.
+> arquivo 2>&1=Neste caso tanto a saída padrão quanto a saída de erro padrão são redirecionadas para o arquivo.
+<=O sinal de menor redireciona a entrada padrão (que é o teclado).
+|=O pipe redireciona a saída padrão de um comando para a entrada padrão de outro.
+tee=Mostra a saída padrão na tela e redireciona para um arquivo ao mesmo tempo.
+comando | tee "arquivo de saída"
+-a=É equivalente ao ">>" que ao invés de substituir, ele acrescenta dados ao arquivo.
+xargs=Utiliza a saída de um comando como parte de outro comando.
+find /diretório -name exemplo | xargs ls
+`comando` ou $(comando)=Essas duas formas são utilizadas para rodar um comando dentro de outro comando.
+echo "O sistema é um: " `uname`
+echo "O sistema é um: " $(uname)
+
+103.5 Criar, Monitorar e Encerrar processos
+
+init=Primeiro processo iniciado no linux (ID=1).
+PID=Id do processo.
+PPID=Id do processo pai.
+ps=Mostra o status dos processos da máquina.
+-u=Entra no modo de usuário.
+-x=Mostra os processos iniciados pelo sistema para o usuário.
+-a=Mostra os processos de todos usuários.
+-f=Mostra os processos em árvore.
+pstree=Mostra os processos em formato de árvore.
+-p=Mostra o ID do processo.
+pgrep=Mostra os ID's dos processos correspondentes a pesquisa efetuada.
+-u=Pesquisar por um usuário específico.
+-l=Lista o nome dos processos.
+top=Comando para monitoramento completo da máquina.
+-b=Mostra a saída do comando na tela sem ser iterativo.
+-d"valor"=Delay, é o tempo que será atualizado.
+-n"valor"=Número de vezes que irá fazer update.
+kill=Manda sinais para os processos, geralmente é sinal para matar o processo, por padrão ele manda o "-15" (Mata processos baseado no PID).
+-l=Lista todos os sinais disponíveis.
+-1=Terminar ou reiniciar um processo.
+-2=Interrompe um processo (tipo o Ctrl+c).
+-3=Fecha o processo.
+-9=Mata o processo abruptamente sem esperar resposta.
+-15=Mata o processo.
+killall e pkill=Mata os processos baseado no nome.
+uptime=Tempo de atividade da máquina.
+free=Mostra a memória e o swap livres.
+-h=Mostra abreviado em Giga ou Mega.
+screen=Gerenciador de abas, utilizado para abrir várias abas dentro de uma mesma sessão (tipo o tmux).
+foreground=Quando o comando fica preso ao terminal.
+background=O comando não fica preso ao terminal, para executar um comando em background basta acrescentar na frente do comando o "&".
+"comando"&
+jobs=Mostra os comandos que estão sendo executados em background.
+-l=Mostra o PID do processo em background.
+Ctrl+z=Passa um processo de foreground para stopped.
+bg ou bg "numero"=Passa o processo de stopped para background.
+fg ou fg "numero"=Passa um processo de background para foreground.
+nohup=Evita que seja enviado uma mensagem para o programa, com exceção do "kill -9".
+
+103.6 Modificar a Prioridade de Execução de Processos
+
+nice=Define a prioridade de um processo que pode variar de -20....+19, onde quanto menor o valor maior sua prioridade. Podemos acompanhar esses valores através do comando "top" na sigla "ni".
+renice=Altera o "nice" de um processo em execução.
+
+103.7 Pesquisar arquivos de texto com Expressões Regulares
+
+grep=Comando utilizado para buscar uma palavra, um trecho de um texto ou até mesmo uma expressão regular dentro de um arquivo.
+-i=Ignora o case sensitive.
+-r=Recursivo, utilizado para procurar nos arquivos de subdiretórios também.
+-v=Ignora as linhas que contenham o que foi procurado.
+-c=Conta quantas ocorrências foram achadas.
+-E ou egrep=Utilizado para expressões regulares mais complexas.
+-l=Apenas os arquivos que seguem o padrão.
+fgrep=A mesma coisa do "grep" porém ele não interpreta expressões regulares.
+Expressões Regulares:
+^=Começo de linha.
+$=Fim de linha.
+^$=Linha que não contenha nada.
+^.=Linha que contenha alguma coisa.
+[]=Que contenha algum carácter da lista.
+*=O carácter anterior pode aparecer ou não, e pode aparecer mais de uma vez.
++=O carácter anterior tem que aparecer pelo menos uma vez ou várias.
+?=O carácter anterior aparece um ou nenhum vez.
+.=No lugar do ponto deve ter qualquer carácter.
+\=Carácter de escape, utilizado para falar que qualquer um dos pontos de expressão regular (*,.,+,etc) fazem parte do texto e não de uma expressão.
+
+103.8 Edição Básica de Arquivos usando o VI
+
+Modos do VI:
+Navegação=Utilizado para navegar pelo arquivo.
+/"string"=Utilizado para buscar alguma string no texto de cima para baixo.
+?"string"=Utilizado para buscar alguma string no texto de baixo para cima.
+n=Procura a próxima ocorrência.
+N=Procura a ocorrência anterior.
+h=Move o cursor para esquerda.
+j=Move o cursor para baixo.
+k=Move o cursor para cima.
+l=Move o cursor para direita.
+cc=Recorta o conteúdo da linha que estiver e entra em modo de edição.
+dd=Recorta o conteúdo da linha que estiver.
+yy=Copia o conteúdo da linha que estiver.
+p=Cola o conteúdo do que estiver em cash na linha abaixo da que eu estiver.
+P=Cola o conteúdo do que estiver em cash na linha acima da que eu estiver.
+gg=Vai para o primeiro carácter do arquivo.
+G=Vai para o ultimo carácter do arquivo.
+Inserção=Utilizado para edição ou inserção de informações no arquivo. 
+i ou insert=Entra no modo de edição onde você estiver no texto.
+o=Entra no modo de edição na linha abaixo da que você estiver criando uma linha em branco.
+O=Entra no modo de edição na linha acima da que você estiver criando uma linha em branco.
+a=Entra no modo de edição depois do carácter que você estiver.
+A=Entra no modo de edição no final da linha que você estiver.
+Esc=Sai do modo de Inserção.
+Comandos=Utilizado para passar comandos para o VI.
+:=Entra no modo de comandos.
+w=Salva o conteúdo do arquivo e continua no arquivo.
+q=Sai do arquivo caso não tenha tido nenhuma alteração que não foi salva.
+q!=Sai do arquivo sem salvar.
+wq ou x=Sai do arquivo salvando as alterações.
+wq! ou x!=Sai do arquivo salvando as alterações e ignorando qualquer aviso.
+! "comando"=Ele executa um comando Shell dentro do VI.
+!sh=Ele volta para o shell, possibilitando você digitar comandos e assim que você sair ele volta para o VI.
+ZZ=Sai do arquivo salvando as alterações.
+
