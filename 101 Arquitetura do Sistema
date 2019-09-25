@@ -1,0 +1,225 @@
+101.1 Identificar e Configurar o Hardware
+
+BIOS=Basic Input Output System (firmware da placa mãe e gerenciador de dispositivos da placa mãe).
+EFI=Extensible Firmware Interface (Novo modelo de BIOS).
+UEFI=Unfied Extensible Firmware Interface (Novo modelo de BIOS).
+IRQ=Interrupt Request (sinal enviado de um dispositivo para a CPU).
+Para consultar os IRQ's basta olhar em /proc/interrupts
+IRQ 0 - Sinal de clock da placa mãe
+IRQ 1 - Teclado
+IRQ 2 - Cascateador de IRQ's (aqui ele le do 8-15 para depois ler do 3-7)
+IRQ 3 - Porta serial 2 (RS-232)
+IRQ 4 - Porta serial 1 (RS-232)
+IRQ 5 - Livre
+IRQ 6 - Drive de disquetes
+IRQ 7 - Porta paralela (Impressora)
+IRQ 8 - Relógio do CMOS
+IRQ 9 - Placa de vídeo
+IRQ 10 - Livre
+IRQ 11 - Controlador USB
+IRQ 12 - Porta PS/2
+IRQ 13 - Coprocessador aritmético
+IRQ 14 - IDE Primária
+IRQ 15 - IDE Secundária
+Endereços de I/O ou de E/S=Utilizada para comunicação entre a CPU e os demais dispositivos de Hardware.
+Para consultar os I/O basta olhar em /proc/ioports
+DMA=Direct Memory Addressing (é um canal para o dispositivo de hardware falar diretamente com a memória, sem utilizar a CPU).
+Para consultar o DMA basta olhar em /proc/dma
+Barramento=Interface onde são conectados os dispositivos de hardware na placa mãe.
+Principais tipos de barramento:
+PCI -> Para verificar as conexões nos barramentos PCI utiliza-se o comando:
+lspci
+USB -> Para verificar as conexões nos barramentos USB utiliza-se o comando:
+lsusb
+Partições Virtuais=São partições que tem informações do sistema dinamicamente.
+/proc=Informações dos processos ativos e recursos de hardware.
+/sys=Informações sobre dispositivos de hardware (sysfs).
+/dev=Referências aos dispositivos do sistema, inclusive de armazenamento (udev).
+Todo hardware é referenciado no Linux por um arquivo:
+/dev/hd3 - Neste caso estamos referenciando um HD.
+udev=Responsável por referenciar automaticamente os dispositivos de hardware da máquina no "/dev".
+dbus ou hald=Responsável pela atualização de status e comunicação dos hardwares.
+ColdPlug=Dispositivos de hardware que para serem adicionados,  a máquina deve ser desligada.
+HotPlug=Dispositivos de hardware que não necessitam do desligamento da máquina.
+lscpu=Mostra informações sobre a CPU's.
+Dispositivos de armazenamento:
+(P)ATA ou IDE=Parallel Advanced Technology Attachment, também conhecido como IDE, que é a referência a interface de conexão.
+Sistema master/slave que comportam 2 discos por cabo. No cabo também pode ter um dispositivo de CD/DVD.
+Mapeados no Linux como:
+/dev/hda ou sda - master
+/dev/hdb ou sdb - slave
+/dev/hdc ou sdc - master
+/dev/hdd ou sdd - slave
+SATA=Serial Advanced Technology Attachment (mais utilizado no momento).
+
+            1 disco por cabo.
+            Mais rápido que o IDE.
+            Mapeados no Linux como:
+
+                /dev/sda - Primeiro disco
+                /dev/sdb - Segundo disco
+                /dev/sdc - Terceiro disco
+
+        SCSI=Small Computer System Interface (Utilizado mais em servidores).
+
+            Tipos:
+
+                8 bits (permite 7 dispositivos + 1 controlador)
+                16 bits (permite 15 dispositivos + 1 controlador)
+
+            Como funciona:
+
+                Canal - Identificador de cada adaptador.
+
+                    Cada dispositivo tem um SCSI_ID.
+
+                        ID - Identificador de cada dispositivo.
+
+                            LUN - Número lógico da unidade.
+
+            Mapeados no Linux como:
+
+                /dev/sda - Primeiro disco
+                /dev/sdb - Segundo disco
+                /dev/sdc - Terceiro disco
+
+            As informações de disco podem ser vistar em /proc/scsi/scsi
+
+        Outros dispositivos
+
+            /dev/fd0 - Disquete / Floppy Disk.
+            /dev/scd0 - SCSI Cd-Rom.
+
+                /dev/cdrom - Normalmente é um link referenciando o cdrom.
+
+            /dev/sr0 - SCSI - DVD
+
+                /dev/dvd - Normalmente é um link referenciando o dvd.
+
+    Módulo=Mesma coisa que os drivers no Windows, porem podem ser carregados ou manuseados conforme necessário. Os módulos constam no sistema com a extensão "módulo.ko" e ficam em "/lib/modules/". Caso você queira iniciar um módulo junto com o sistema, você pode adiciona-lo ao arquivo "/etc/modules".
+
+        lsmod=Lista os módulos carregados pelo Linux (também encontrado em "/proc/modules").
+
+            Use by=0-Não está em uso; 1,2,3,etc-São quantos módulos dependem deste.
+
+        modinfo "nome módulo"=Mostra informações sobre o módulo.
+        rmmod "nome módulo"=Utilizado para retirar um módulo que está carregado.
+        insmod "caminho completo"=Utilizado para inserir um módulo.
+        modprobe=Utilizado para inserir e remover módulos.
+
+            modprobe "nome módulo" - Adiciona um módulo e suas dependências.
+            modprobe -r "nome módulo" - Remove o módulo e suas dependências.
+
+
+101.2 Processo de Boot
+
+    Processo de boot:
+
+        BIOS    ->    MBR    ->    Bootloader (GRUB/LILO)    ->    Kernel    ->    Init
+
+        BIOS=Localiza nos dispositivos da máquina quem está com a MBR e à executa.
+        MBR=Master Boot Record, executa o Bootloader que é instalado dentro do MBR e que ocupa um espaço de 512 bytes (446 bytes -Bootloader, 64 bytes - Partition Table, 2 bytes - Validation Check).
+        Bootloader (GRUB/LILO)=É o gerenciador de boot da maquina, ele carrega o SO na memória por default ou a partir de uma lista, seleciona e Executa o Kernel e o initrd ou initramfs.
+
+            initrd ou initramfs=Filesystem temporário montado na RAM para dar suporte ao kernel, contendo módulos necessários para carregamento do Kernel.
+
+        Kernel=Base ou alicerce do Linux. Executa o /sbin/init.
+
+    dmesg=Mostra as informações de boot da máquina e algumas informações dinâmicas da máquina.
+
+
+101.3 Alterar os RunLevels, Shutdown e Reboot
+
+    Init=Inicia os primeiros processos e serviços do Linux sendo pai de todos os processos com o ID 1 e funcionando através runlevel ou target que contem modos de operação e grupo de serviços a serem carregados.
+
+        Principais INITs:
+
+            SystemV (SysV)=init original, trabalha com a RunLevel ou níveis de execução do sistema que carrega um conjunto de programas, scripts ou serviços.
+
+                Cfg Principal=/etc/inittab
+
+                    Exemplo de inittab:
+
+                        #RunLevel default
+                        id:2:initdefault:
+
+                        #id:runlevel:actions:process (ele executa o script "rc" com o parâmetro "0, 1, etc")
+                        l0:0:wait:/etc/init.d/rc 0
+                        l1:1:wait:/etc/init.d/rc 1
+                        l2:2:wait:/etc/init.d/rc 2
+                        l3:3:wait:/etc/init.d/rc 3
+                        l4:4:wait:/etc/init.d/rc 4
+                        l5:5:wait:/etc/init.d/rc 5
+                        l6:6:wait:/etc/init.d/rc 6
+
+                Diretórios de scripts:
+
+                    /etc/init.d/=Onde ficam os scripts de inicialização dos serviços.
+
+                    /etc/rc.d/ ou /etc/rc"número".d=São os RunLevel, onde dentro do diretório irá aparecer a lista dos serviços que devem ser iniciados(o link começa com Start) ou parados(o link começa com Kill).
+
+                init ou telinit=Utilizado para gerenciamento de RunLevel (também funciona no systemd em modo de compatibilidade).
+
+            systemd=Gerenciador de sistemas e serviços compatível com o SysV e também um dos mais utilizados no momento, que trás melhorias como paralelização dos processos fazendo com que a inicialização seja mais rápida e o uso do dbus para gerenciamento dos processos e dispositivos, também trazendo o conceito de Units e grupos de Units(targets). Pode ser acessado através do "/lib/systemd/system", algumas Units também aparecem em "/etc/systemd/system".
+
+                unit=nome.tipo -> "httpd.service"
+                Tipos de serviços:
+
+                    service
+                    socket
+                    device
+                    mount
+                    automount
+                    target - É um grupo de serviços e também vai ter um target default. Através de links ele se torna compatível aos RunLevels inclusive com o RunLevel default.
+                    snapchat
+
+                systemctl=Utilizado para gerenciamento das Units.
+
+                    list-units=Lista as unidades.
+                    reboot=Reinicializa a maquina.
+                    poweroff=Desliga a maquina.
+                    set-default "unidade.tardet"=Seta o target default.
+                    isolate "unidade.tardet"=Altera o target.
+                    default=Inicia o target default.
+                    status "unidade"=Mostra o status do serviço.
+                    start "unidade"=Inicia o serviço.
+                    stop "unidade"=Para o serviço.
+
+            Upstart=Gerenciador de serviços substituto do init com opções de compatibilidade. Esta forma de INIT ainda está sendo aprimorada e provavelmente substituirá o "systemd" que hoje é o mais utilizado. Suas configurações ficam em "/etc/init/"
+
+                Principais comandos:
+
+                    initctl list
+                    start serviço
+                    stop serviço
+                    status serviço
+
+    Principais RunLevels:
+
+        0            -    Desligamento
+        1, s, S     -    Single user (Usuário de manutenção)
+        2            -    Multiusuário (Sem rede)
+        3            -    Multiusuário (Com rede)
+        4            -    Multiusuário (definido pelo usuário)
+        5            -    Multiusuário (com rede e gráfico)
+        6            -    Reinicialização
+
+    runlevel=Mostra o RunLevel que você está utilizando.
+    shutdown=Utilizado para desligar ou reinicializar a maquina (este processo pode ser agendado). Se você digitar o comando sem nenhum parâmetro a maquina será desligada em 1 minuto.
+
+        -c=Cancela o comando.
+        -r=Reinicializa o sistema.
+        -h=Desliga o sistema, porém a máquina fica ligada.
+
+    reboot=Reinicializa o sistema.
+    halt=Desliga o sistema, porém a máquina fica ligada.
+    poweroff=Desliga a máquina.
+    wall=Utilizado para mandar mensagens para os usuários do sistema.
+
+
+
+
+
+
+
+
