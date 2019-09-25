@@ -1,0 +1,129 @@
+107.1 Gerenciamento de Usuários e Grupos
+
+Por padrão, cada usuário deve pertencer a um grupo, porém ele pode pertencer a outros grupos também, facilitando o permicionamento para os usuários.
+/etc/passwd=Aquivo de armazenamento dos usuários. Normalmente, a partir do ID=1000 que os usuário são associados, antes disso geralmente é utilizado por aplicações.
+r333369:x:1000:1000:Ricardo Ruy Filho,,,:/home/r333369:/bin/bash (recomendável utilizar letras minusculas)
+name:pass:iduser:idgroup:description:home:shell (/bin/false - Para não logar)
+/etc/shadow=Arquivo de armazenamento de senhas dos usuários.
+r333369:$MWD/r9hFqE2Ubxwj3jZ0:17786:0:99999:7:::
+name:pass(rash):::::::
+/etc/group=Arquivo de armazenamento dos grupos.
+video:x:44:r333369
+name:pass:idgroup:usuarios,usuarios
+/etc/gshadow=Arquivo de armazenamento de senhas dos grupos.
+/etc/login.defs=Arquivo de definição de controle dos usuários.
+CREATE_HOME=Cria automaticamente o home do usuário.
+useradd=Adiciona um usuário.
+-c=Comentário.
+-s=Shell.
+-g=Define o grupo padrão.
+-G=Associa o usuário a outros grupos.
+-d=Aponta para onde será criado o home do usuário (padrão é /home/usuário ).
+-m=Cria um home para o usuário.
+-p=Passa a senha, porém ela deve estar em rash.
+-u=Aponta um IDUser.
+userdel=Deleta um usuário.
+-r=Apaga o home do usuário.
+usermod=Modifica um usuário.
+-c=Comentário.
+-s=Shell.
+-g=Define o grupo padrão.
+-G=Associa o usuário aos grupos.
+-a=Adiciona a um grupo.
+-d=Aponta para onde será criado o home do usuário (padrão é /home/usuário ).
+-l=Altera o nome de um usuário.
+-L=Trava a conta, o usuário não loga, no /etc/shadow aparece"!" que significa que está bloqueado.
+-u=Aponta um IDUser.
+-U=Destrava a conta.
+passwd=Define ou altera a senha de um usuário.
+-e=Expira a senha do usuário para força-lo a trocar na próxima vez que ele logar.
+-l=Bloqueia o usuário.
+-u=Desbloqueia o usuário.
+groupadd=Adiciona um grupo.
+-g=Aponta um IDGroup.
+groupdel=Deleta um grupo.
+groupmod=Modifica um grupo.
+-g=Altera o IDGroup.
+-n=Altera o nome do grupo.
+newgrp=O usuário assume a função de um grupo que ele faça parte sem ser o grupo padrão, porém isso acontece só no shell atual.
+gpasswd=Define ou altera a senha de um grupo, possibilitando que um usuário assuma a função de um grupo da qual ele não faz parte.
+-a=Adiciona um usuário ao grupo.
+-d=Remove um usuário ao grupo.
+-r=Remove a senha do grupo.
+id=Mostra informações do usuário: IDUser, IDGroup e outros grupos que eu pertença.
+groups=Mostra os grupos que o usuário faz parte.
+getent=Mostra informações de usuário ou grupos.
+chage=Mostra as propriedades do usuário
+-l=Lista as opções do usuário.
+-d=Define a data de expiração da senha, se for o valor "0" força a expiração.
+-E=Define a data de expiração da conta.
+-m=Número mínimo entre a troca de senha.
+-M=Número máximo entre a troca de senha.
+-W=Define quantos dias antes da expiração o usuário receberá avisos.
+
+107.2 Agendamento de Tarefas
+
+cron / crontab=Principal dispositivo de agendamento de tarefas do Linux, também considerada um "deamon", que significa que ela deve estar sempre rodando para funcionar. Caso a máquina esteja desligada na hora do agendamento não será executado, nem quando a máquina voltar. (Caso não tenha o cron.allow ou cron.denny todos podem usar)
+#systemctl status cron=Verifica se a "cron" está ativa no sistema.
+#systemctl start cron=Ativa a "cron" no sistema.
+#systemctl is-enabled cron=Verifica se a "cron" está setada para inicializar com o sistema.
+#systemctl enabled cron=Seta a "cron" para inicializar com o sistema.
+/etc/crontab=Esta é a "cron" do sistema, que só pode ser utilizada pelo usuário "root".
+17 *    * * *   root    cd / && run-parts --report /etc/cron.hourly
+minuto / hora / dias mes / mes / dias semana / usuário executar / comando script
+*=Significa tudo, todos minutos, horas, dias, etc.
+-=Significa um range, por exemplo 9-20, irá executar do 9 ao 20.
+minuto=Vai de 0 a 59 (*/5 roda a cada 5 minutos) que significa que o script ou comando será rodado no minuto selecionado.
+hora=Vai de 0 a 23 (*/2 roda a cada 2 horas) que significa que o script ou comando será rodado na hora selecionada.
+dias mes=Vai de 1 a 30 (*/2 roda a cada 2 dias) que significa que o script ou comando será rodado no dia selecionado.
+mes=Vai de 1 a 12 (*/2 roda a cada 2 meses) que significa que o script ou comando será rodado no mês selecionado.
+dias semana=Vai de 0 a 7 (*/2 roda a cada 2 dias, sendo 0 e 7 domingo) que significa que o script ou comando será rodado no dia selecionado.
+/etc/cron.d=Aqui ao invés de ser colocado um script, deve ser colocado um arquivo com um agendamento, semelhante ao /etc/crontab.
+/etc/cron.daily=Tudo que estiver dentro desta pasta será executado todos os dias.
+/etc/cron.hourly=Tudo que estiver dentro desta pasta será executado toda hora.
+/etc/cron.monthly=Tudo que estiver dentro desta pasta será executado uma vez ao mês.
+/etc/cron.weekly=Tudo que estiver dentro desta pasta será executado uma vez por semana.
+run-parts=Executa todos os scripts de um diretório.
+crontab=Comando utilizado para verificar e alterar o crontab.
+-l=Lista o crontab do usuário.
+-u=O usuário "root" com esta opção passando um usuário do sistema poderá listar ou editar a crontab do usuário.
+-e=Editada a crontab.
+-r=Remove a crontab.
+arquivo=Importa para a crontab as informações do arquivo.
+/var/spool/cron=Fica armazenada todas as crontabs de todos usuários.
+/etc/cron.allow=Apenas quem estiver neste arquivo poderá criar uma cron. (Tem prioridade sobre o "cron.denny")
+/etc/cron.denny=Quem estiver neste arquivo não poderá criar uma cron.
+anacron=Caso a máquina seja desligada, mesmo assim após ela voltar ele será executado, ele não é um deamon, portanto não é executado constantemente, ele executa de tempos em tempos.
+/etc/anacrontab=Arquivo de configuração do "anacron".
+1       5       cron.daily      run-parts --report /etc/cron.daily
+periodo / delay / identify / comando
+periodo=A cada quantos dias será executado.
+delay=Após completar o "periodo" quantos minutos depois será executado.
+identify=Descrição de como aparece-rá no log.
+at=Utilizado para um agendamento único. (Caso não tenha o at.allow ou at.denny apenas o root pode usar)
+-l / q=Lista os jobs agendados.
+-d / rm=Remove um job agendado.
+midnight=Executa a meia noite.
+teatime=Executa na hora do chá as 18.
+/etc/at.allow=Apenas quem estiver neste arquivo poderá criar um at. (Tem prioridade sobre o "cron.denny")
+/etc/at.denny=Quem estiver neste arquivo não poderá criar um at.
+
+107.3 Localização e Internacionalização
+
+timedatectl=É equivalente ao comando "date", porém mais completo.
+/etc/localtime=Este é o principal arquivo de configuração timezone, porém está todo em binário e normalmente é um link que aponta geralmente para /usr/share/zoneinfo/America/Sao_Paulo. Algumas distribuições utilizam o /etc/timezone. Para alterar o localtime, basta apontar o link simbólico para outra timezone ou copiar a time zone e colar lá. 
+tzselect=Ajuda a selecionar um timezone, porém essa timezone não necessariamente será a do sistema, você pode associar a variável $TZ que irá alterar a timezone apenas da minha seção (export TZ=America/Chicago).
+locale=Mostra as configurações de linguagem do seu sistema.
+pt_BR.UTF-8
+linguagem_país.condificação
+LC_ALL=Sobrescreve todas as outras LC's. Você pode configurar para cada usuário em "profile" ou para todos em "/etc/bash.bashrc".
+LANG=É a linguagem da máquina e as LC's os formatos.
+LANG=C=Utilizado em scripts, para que a máquina que executar o script não altere a linguagem padrão do script.
+-a=Mostra as linguagens disponíveis na minha máquina para utilização.
+iconv=Altera o formato de um arquivo.
+#iconv -f ISO-8859-1 -t UTF-8 arquivo.txt
+-f=Formato do arquivo de origem
+-t=Formato que será transformado
+
+
+
