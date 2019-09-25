@@ -1,0 +1,125 @@
+108.1 Manutenção do Horário do Sistema
+
+Partimos do princípio que em todas as máquinas existem 2 horários, o da BIOS que é utilizado no processo de boot e o do sistema operacional, conhecido como software clock, carregado pelo sistema, lembrando que não necessariamente eles devem estar sincronizados.
+date=Mostra a data, hora e timezone do sistema.
+-u=Mostra o horário com o timezone UTC(horário padrão mundial).
++%campo=Mostra um campo específico.
+datahora=Altera a data do sistema.
+#date 123107152018 (mesdiahoraminutoano)
+hwclock=Mostra a data e hora da BIOS.
+-w ou --systohc=Sincroniza o horário da BIOS para ficar igual o do sistema.
+-s ou --hctosys=Sincroniza o horário do sistema para ficar igual o da BIOS.
+--set --date=Altera a data da BIOS.
+#hwclock --set --date "12/31/2018 07:15"
+ntp=O NTP é um protocolo e utiliza a porta 123, ele pode ser um servidor interno ou um servidor da internet que prove o horário para a sua máquina ou para as máquinas na sua rede, afim de padronizar o horário.
+/etc/ntp.conf=Este é o arquivo de configuração do NTP.
+pool ou server=É o servidor que está configurado como NTP.
+www.ntppool.org=Servidor com vários NTP's do mundo todo, já configurados e prontos para utilização, basta alterar o arquivo de configuração do NTP.
+-p=Mostra os servidores que estou utilizando e algumas estatísticas.
+-n=Mostra o IP ao invés de resolver os nomes.
+ntpdate=Diferente do "ntp" que é um daemon, o "ntpdate" atualiza o servidor NTP uma única vez, passando como parâmetro um servidor NTP.
+-q=Faz uma consulta para verificar se o servidor NTP está OK.
+/etc/services=Mostra todas as portas e para que elas servem.
+
+108.2 Sistema de Logs
+
+syslog ou syslog.d=Sistema de gerenciamento padrão de logs do Linux (mais antigo).
+/etc/syslog.conf=Arquivo de configuração do syslog.
+klogd=Pega os logs do kernel.
+rsyslog ou rsyslog.d=É uma versão melhorada do syslog.
+/etc/rsyslog.conf=Arquivo de configuração do rsyslog.
+Os tipos de logs são separados por:
+#facility.priority    action
+facility=O criador da mensagem de log.
+Ex.:auth, authpriv, cron, daemon, kern, mail, syslog, user, etc.
+priority=É a urgência/importância da mensagem. Quando é setada uma prioridade, é tudo que estiver a partir desta prioridade, caso você queira uma prioridade específica você deve setar assim: facility.=priority.
+Ex.:debug, info, notice, warning (warn), err (error), crit, alert, emerg (panic). O "none" significa que não deve gerar mensagem. (dinw e cae)
+action=Destino das mensagens de log, onde pode ser localmente em um arquivo de log, na tela de um usuário ou em um servidor remoto.
+Ex.:Localmente ---------> /var/log/alguma_coisa
+Ex.:Servidor Remoto --> @10.0.0.100 (IP)
+Ex.:Tela Usuário --------> * (Todos usuário) ou nome_do_usuário
+/etc/rsyslog.d/=Arquivo de configuração onde aplicações jogam informação.
+syslog-ng=Outro gerenciador de logs do Linux.
+logger=Gera um log de teste.
+-p=Passar a facility.priority
+-t=Passar uma [tag] que irá aparecer no syslog, caso não informe irá aparecer o nome do usuário.
+/etc/default/inetutils-syslogd ou /etc/default/rsyslog=Arquivo que deve ser alterado para receber logs remotos.
+logrotate=É um padrão encontrado em qualquer distribuição Linux, que tem como objetivo rotacionar os logs armazenados na máquina para que não chegue a ocupar todo o espaço em disco.
+/etc/logrotate.conf=Arquivo principal de configuração do rotacionamento dos logs, ele chama o /etc/rotate.d/ que é um diretório onde ficam armazenados as configurações de rotate das aplicações. O logrotate por não ser um daemon deve ser chamado, ele é chamado pela "cron".
+Ex.: /var/log/syslog {
+rotate 7                    -    Armazena os últimos 7 arquivos rotacionados
+daily                         -    Rotaciona diariamente
+compress                -    Comprime os arquivos rotacionados
+delaycompress      -    Não comprime o primeiro arquivo, apenas a partir do segundo
+posrotate                -    Faz a releitura das configurações do syslog
+invoke-rc.d rsyslog rotate > /dev/null
+endscript
+}
+sistemd-journal=É um sistema de gerenciamento de logs que geralmente funciona em conjunto com o syslog ou rsyslog, mas que pode ser utilizado exclusivamente pois possui as suas configurações separadamente, inclusive um rotate apartado. Lembrando que esse journal não tem nada a ver com journal do filesystem.
+/etc/systemd/journal.conf=Arquivo de configuração principal do journal.
+/run/log/journal/=Diretório padrão onde são enviados os logs do journal.
+journalctl=Comando utilizado para ler os arquivos de log do journal que estão como binários.
+-b=Mostra informações do boot.
+-f=Mostra as ultimas informações e continua logando na tela, igual ao "tail -f".
+-n10=Mostra os últimos 10 registros.
+--since "today"=Só os logs de hoje.
+
+108.3 Básico sobre Agentes de Envio de Emails (MTA)
+
+MTA (Mail Transfer Agent)=Responsável pelo envio e recebimento de e-mail (Servidor de e-mail).
+SMTP (Simple Mail Transfer Protocol)=Protocolo utilizado para envio de mensagens entre servidores, por padrão utiliza a porta 25.
+MTA = SMTP = Servidor de Emails
+Principais servidores de e-mail utilizados pelo Linux:
+QMAIL=Servidor derivado do Unix, porém não é mais utilizado atualmente, apenas em legados.
+SENDMAIL=Já foi o padrão de servidor de e-mails utilizado pelo Linux, porém hoje em dia já não é mais o padrão, a pesar de ainda ser utilizado em legados.
+POSTFIX=É utilizado hoje como padrão de servidor de e-mail pelo Linux. 
+EXIM=Outra opção de servidor de e-mail.
+mailutils=Pacote que pode ser instalado através do "apt", nele já contem o Postifix e algumas ferramentas de email.
+mail=Comando utilizado para envio de e-mails, a entrada de texto pode ser através de um "cat arquivo_mensagem | mail...", "echo 'Mensagem | mail...'" ou "mail.... < arquivo_mensagem".
+/var/spool/mail=Onde ficam guardadas as mensagens de email dos usuários.
+-s=Subject (Assunto do e-mail)
+/etc/aliases=Arquivo de atalhos, onde pode ser configurado o redirecionamento de apelidos ou usuários para usuários da máquina.
+newaliases=Comando de reload do arquivo aliases.
+~/.forward=Arquivo de redirecionamento de emails para outros usuários.
+mailq or sendmail -bp=Mostra os email's que estão na fila para serem enviados.
+
+108.4 Gerenciamento de Impressoras
+
+cups=Sistema de gerenciamento de impressão que roda na porta 631, ele pode ser configurado de três formas, pelo browser, por arquivo texto ou nos arquivos de configuração do linux.
+/var/spool/cups=Arquivos impressos e que ainda serão impressos.
+Arquivo iniciado por "d"=Esta parado na fila de impressão.
+Arquivo iniciado por "c"=Já foi impresso.
+/var/log/cups=Arquivos de log do cups.
+/etc/cups=Onde ficam todas as configurações de impressão.
+cupsd.conf=Principal arquivo de configuração
+printers.conf=As impressoras que estão configuradas.
+ppd=Diretório onde ficam os drivers das impressoras configuradas.
+lpoptions=Aquivo onde fica definida a impressora padrão.
+Browser=Todas as configurações feitas via interface são traduzidas para CLI.
+http://localhost:631
+Administration / Add Printer
+lpinfo=Lista os dispositivos e os drivers de impressão.
+-v=Mostra os dispositivos disponíveis.
+-m=Mostra os drivers disponíveis.
+lpstat=Mostra o status das impressoras.
+-a=Mostra o status de todas as impressoras.
+-t or -l=Mostra mais informações.
+-d=Mostra a impressora padrão da máquina.
+lpq=Mostra as filas de impressão, caso não tenha uma padrão dara erro.
+-P=Nome da impressora que deseja ver a fila de impressão.
+lpadmin=Comando utilizado para adicionar uma impressora.
+-p=Passar o Nome da Impressora.
+-E=Deixa a impressora habilitada assim que configurada.
+-v=Passar o dispositivo da impressora.
+-m=Passar o Driver da impressora.
+-x=Remove uma impressora.
+lpoptions=Verifica e altera algumas informações de alguma impressora.
+-p=Mostra informações a respeito da impressora passada.
+-d=Define uma impressora como padrão.
+lpr=Comando utilizado para o envio de arquivos para impressão.
+Caminho do arquivo=Imprime o conteudo do arquivo na impressora padrão.
+Comando | lpr=Imprime a saida do comando.
+-P=Manda para a impressora indicada.
+lprm=Comando utilizado para limpar a fila de impressões.
+
+
