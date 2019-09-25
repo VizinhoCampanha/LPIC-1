@@ -1,0 +1,242 @@
+104.1 Criando Partições e Sistema de Arquivos
+
+fdisk=Comando utilizado para criar e deletar partições e disco (Partições MBR=DOS, porém trabalha com outros tipos de partições, por exemplo GPT).
+-l=Lista os discos e as partições que estão dentro dos disco.
+/dev/sd?=Entra no disco que você irá editar.
+n=Adiciona um nova partição.
+p=Primária ou e=Estendida.
+Número da partição.
+Setor início, e setor fim que também pode ser definido por +size{K,M,G,T,P}. Ex: +5G.
+p=Lista as partições.
+w=Salva as configurações de partições e sai.
+q=Sai sem salvar.
+d=Deleta uma partição.
+Número da partição.
+l=Lista os tipos de partições utilizáveis.
+t=Altera o tipo de partição.
+Número da partição.
+Código do tipo de partição a ser alterado.
+F=Mostra espaço livre não alocado.
+gdisk=Comando para manuseio e criação de partições do tipo GPT.
+/dev/sd?=Entra no disco que você irá editar.
+n=Adiciona um nova partição.
+Número da partição.
+Setor início, e setor fim que também pode ser definido por +size{K,M,G,T,P}. Ex: +5G.
+Código do tipo de partição a ser alterado.
+w=Salva as configurações de partições e sai.
+parted=Mais utilizado para modificar o tamanho das partições.
+gparted=Tem as mesmas funções do "parted", porém de forma gráfica.
+filesystem=É a forma que o disco irá trabalhar com as informações.
+journal=É a habilidade do filesystem gravar um log do que está acontecendo no sistema.
+Tipos de Filesystems
+
+Tipo de FS
+	Journal?	Característica
+ext2	Não	Original do início do Linux
+ext3	Sim	ext2 com journal
+ext4	Sim	Melhoria do ext3
+XFS	Sim	Criado pela SGI para o IRIX
+JFS	Sim	
+Criado pela IBM
+
+ReiserFS	Sim	Melhor performance com pequenos arquivos
+Brtfs	Sim	Desenvolvido inicialmente pela Oracle. Nova Geração
+VFAT	Não	Utilizado em sistemas Windows
+
+mkfs=Utilizado para definir o tipo de uma partição.
+-t=Tipo de partição
+mkfs.tipo de partição=Particiona a partição escolhida com o tipo definido.
+mkswap=Defini uma partição como swap.
+
+104.2 Mantendo a Integridade de FSS
+
+inode=ID de arquivos ou diretórios no Linux. Pode gerar erro de espaço em disco mesmo tendo espaço em disco, caso o número de inod's disponíveis para a partição se esgote.
+df=Mostra as principais partições, onde elas estão montadas, seu tamanho e o espaço disponível.
+-h=Mostra de uma forma mais simples.
+/caminho=Mostra onde está montado.
+-T=Mostra o tipo de filesystem.
+-i=Mostra informações de inode.
+du=Mostra o espaço utilizado por cada diretório no sistema.
+-a=Mostra os arquivos também.
+-h=Mostra de uma forma mais simples.
+-s=Sumariza os subdiretórios do diretório raiz.
+/caminho=Mostra informações referentes ao diretório indicado.
+--max-depth=número=Mostra informações aos níveis especificados.
+fsck=Faz análise e correções nas partições, porém elas não podem estar montadas.
+/partição=Verifica a partição indicada.
+.tipo de partição=Faz a checagem na partição indicada de acordo com o tipo.
+-t=Tipo da partição.
+dumpe2fs=Mostra todas as informações referentes a uma partição do tipo ext.
+/partição=Mostra o dumpe2fs da partição especificada.
+-h=Mostra de uma forma mais simples.
+xfs_info=Mostra todas as informações referentes a uma partição do tipo xfs.
+/partição=Mostra o xfs_info da partição especificada.
+tune2fs=Utilizado para fazer alterações na partição do tipo ext.
+-L=Altera o label da partição.
+-i=Altera o tempo de verificação do fsck.
+-c=Altera a quantidade de montagens para a verificação do fsck.
+-m=Altera a porcentagem da quantidade de disco a não ser utilizada.
+-j=Habilita no journal em uma partição.
+xfs_admin=Utilizado para fazer alterações na partição do tipo xfs.
+debugfs=Comando mais avançado para o tune2fs.
+xfs_db=Comando mais avançado para o xfs_admin.
+
+104.3 Controle de Montagem e Desmontagem de FSS
+
+/etc/fstab=Arquivo onde o sistema busca as partições que devem ser montadas automaticamente, portanto, caso o usuário queira que uma montagem seja feita sempre que o sistema iniciar ela deve ser adicionada neste arquivo.
+UUID=É um identificador único utilizado pelo Linux para filesystens.
+Principais opções utilizadas nas configurações do /etc/fstab:
+
+    rw = Partição aceita gravação de dados (ReadWrite)
+    ro = Partição não aceita gravação de dados, é apenas leitura (ReadOnly)
+    auto = Partição será montada automaticamente durante o boot e quando usado o comando "mount -a)
+    noauto = Proíbe a montagem automática. Normalmente utilizado com dispositivos removíveis.
+    sync = Estabelece E/S síncrona
+    async = Estabelece E/S assíncrona
+    dev = Interpreta dispositivos especiais, como os existentes na partição /dev
+    exec = Habilita a execução de programas contidos nessa partição
+    noexec = Proíbe a execução de programas executáveis contidos na partição
+    suid = Habilita o uso do SUID e SGID
+    nosuid = Desabilita o uso do SUID e SGID
+    user = Permite que um usuário comum monte um sistemas de arquivos, mas apenas este usuário conseguirá desmontá-lo
+    users = Permite que um usuário comum monte um FS, mas qualquer usuário poderá desmontá-lo
+    nouser = Apenas root pode montar e desmontar a partição
+    usrquota = Habilita o uso de quotas por usuário
+    grpquota = Habilita o uso de quotas por grupo
+    defaults = Define o conjunto de opções: rw, suid, dev, exec, auto, nouser e async
+
+mount=Utilizado para montar uma partição temporariamente, assim que a máquina for reiniciada automaticamente a montagem é desfeita.
+-a=Monta tudo o que está no arquivo "fstab".
+-r=Monta um partição somente leitura.
+umount=Utilizado para desmontar uma partição.
+-a=Desmonta tudo o que está no arquivo "fstab".
+
+104.4 Gerenciando Cotas de Disco
+
+Para habilitar o dimensionamento de cotas para usuários, você deve editar o "/etc/fstab" acrescentando na partição onde está o "home" a opção de "usrquota e grpquota"
+quotacheck=Cria os arquivos de configuração de quotas tanto de usuários quanto de grupos, no diretório onde está o home.
+-c=Cria o arquivo de quota.
+-u=Arquivo de usuário.
+-g=Arquivo de grupo.
+-f=Força a criação.
+edquota=Edita a quota de um usuário, onde "hard" é o limite máximo que um usuário pode utilizar de espaço e "soft" é onde ele começa a alarmar para o usuário que a quota dele foi ultrapassada e esse alarme é mostrado por um período que é especificado em "grace quota" e após esse período o usuário é bloqueado para escrever no disco.
+-t=Define o tempo do grace quota.
+-g=Define a quota para um grupo.
+repquota=Mostra a quota dos usuários no sistema.
+quota=Mostra a quota do usuário.
+quotaoff=Desabilita o sistema de quotas.
+quotaon=Habilita o sistema de quotas.
+
+104.5 Gerenciando Permissões e Propriedades de Arquivos
+
+chmod=Utilizado para alterar as permissões de um arquivo ou diretório.
+-R=Recursivo. Altera todos os arquivos dentro de um diretório para a mesma permissão.
+umask=Mascara que defini a permissão de um arquivo, por padrão ele tem como valor 666 de permissões, equivalente a leitura e escrita. 666 ou -rw-rw-rw- é equivalente a 0000, caso o umask seja 0002 significa que foi retirado 2 e ficará -rw-rw-r--, isso no caso de arquivo, no caso de diretório o valor padrão é 777.
+chown=Utilizado para alterar o dono e/ou grupo do arquivo.
+-R=Recursivo. Altera todos os arquivos dentro de um diretório para a mesma permissão.
+chgrp=Utilizado para alterar o grupo do arquivo.
+-R=Recursivo. Altera todos os arquivos dentro de um diretório para a mesma permissão.
+stat=Mostra todas as permissões do arquivo.
+
+Alvo	Operação	Permissão
+u-Usuário
+g-Grupo
+o-Outros
+a-Todos
+	
++ Acrescenta a Permissão
+- Retira a Permissão
+= Exatamente esta Permissão
+	
+SUID /   r-Leitura          =     4
+SGID /   w-Escrita         =     2
+Sticky / x-Execução     =     1
+
+
+
+
+SUID	SGID	Sticky
+
+	
+
+r	w	x
+
+	
+
+r	w	x
+
+	
+
+r	w	x
+
+
+0	0	0
+
+	
+
+0	0	0
+
+	
+
+0	0	0
+
+	
+
+
+0	0	0
+
+
+Atributos Especiais	Usuário	Grupo	Outros
+
+
+SUID=Através do "chmod" acrescento a permissão "s" ao usuário, desta forma o arquivo poderá ser executado com as mesmas permissões de seu criador.Se for "s" quer dizer que ele tem permissão "x" e caso seja "S" ele não tem permissão "x".
+SGID=Através do "chmod" acrescento a permissão "s" a um grupo de usuário, desta forma o arquivo poderá ser executado com as mesmas permissões do grupo criador e caso seja um diretório os arquivos criados dentro aparecerão com o grupo do diretório e não do criador do arquivo.Se for "s" quer dizer que ele tem permissão "x" e caso seja "S" ele não tem permissão "x".
+Sticky=Através do "chmod" acrescento a permissão "t" em outros para que apenas o criador do arquivo ou diretório possa edita-lo. Se for "t" quer dizer que ele tem permissão "x" e caso seja "T" ele não tem permissão "x".
+
+
+
+	r	w	x
+Diretório	Visualiza os arquivos que tem no diretório (ls)	Acrescenta ou Apaga arquivos no diretório	Entra no diretório (cd)
+Arquivo	Visualiza o conteúdo do arquivo	Edita o arquivo	Executa o arquivo (script)
+
+
+104.6 Criando e Alterando Links Hard e Soft
+
+Existem dois tipos de links:
+simbólico=É um novo arquivo(novo inode) que aponta para outro arquivo, um atalho.
+físico ou hard link=Ele cria outro arquivo apontando para o mesmo inode, o que significa que caso um seja alterado o outro também será, porém ele só pode ser criado dentro da mesma partição.
+"lrwxrwxrwx 1 r333369 r333369   37 jul 27 12:42 Linux"=O número em negrito mostra quantas referências existem para o mesmo inode.
+
+104.7 Padrão e Comandos para Localização de Arquivos
+
+FHS=Hierarquia padrão do Sistema de Arquivos
+
+Diretórios obrigados a estarem no diretório raiz /:
+
+Diretório	Finalidade	Exemplo
+/bin	Programas críticos / Todos usuários	cp, ls, kill, rm
+/sbin	Programas críticos / SysAdmin	fdisk, fsck, mkfs, quotaon
+/etc	Arquivos de configuração do sistema	passwd, inittab, profile
+/lib	Bibliotecas e Módulos Kernel	
+/mnt e /media	Pontos de montagem de media	dvd, cdrom
+
+/proc e /sys	Informações de Hardware e Processo	interrupts, cpu
+/dev	Dispositivos e Arquivos Especiais	sda, sr0, tty
+
+
+Diretórios que podem ser montados em outras partições:
+
+Diretório	Finalidade	Exemplo
+/root	Diretório padrão do usuário root	
+/boot	Arquivos de configuração do bootloader, imagens de kernel e initd	
+/tmp	Arquivos temporários	
+/home	Diretório e Arquivos dos usuários	
+/var	Arquivos dinâmicos como logs, filas	/var/log, /var/mail
+
+/usr	Instalação de Programas do Linux.	/usr/bin, /usr/lib, /usr/sbin
+/opt	Instalação de Aplicações em Geral	
+
+
+
+
+
