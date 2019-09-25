@@ -1,0 +1,46 @@
+106.1 Instalar e Configurar X11
+
+X11 ou X.Org=São uma implementações da interfaceX ou SistemaX, que corresponde a interface gráfica mais básica do Linux. Todas as aplicações são clientes do ServidorX.
+/etc/X11/xorg.conf=Arquivo de configuração do X11, porém atualmente as distribuições Linux já reconhecem todas as configurações automaticamente e por padrão esse arquivo não existem, para cria-lo você deve parar a interface gráfica (Xorg) ou trocar de modo de usuário para "multi-user.target." através do "systemctl isolete multi-user.target", depois você executa "Xorg -configure".
+O arquivo de configuração é dividido em seções e subseções.
+startx=Sobe a interface gráfica da máquina sem display manager.
+xdpyinfo=Mostra as configurações da interfaceX.
+xwininfo=Mostra informações referentes a uma janela.
+xvinfo=Exibe as capacidades dos adaptadores de vídeos que estão utilizando o X, como por exemplo o tamanho máximo de uma imagem.
+Fonts=A interfaceX utiliza conjuntos de fonts, o usuário pode adicionar novas fonts e estes tipos de fontes são divididas em duas (bitmap e outline). Geralmente essas fonts ficam em "/usr/share/fonts/X11" ou "/usr/share/X11/fonts", você também pode apontar um servidor de fonts através do arquivo xorg.conf.
+bitmap=São tipos mais simples de fonts.
+outline=São fonts mais elaboradas e que costumeiramente iremos utilizar.
+mkfontscale=Gera o arquivo de índice de fonts "fonts.scale", sem o qual não serão reconhecidas as novas fonts.
+mkfontdir=Gera o arquivo de índice de fonts "fonts.dir", sem o qual não serão reconhecidas as novas fonts.
+$DISPLAY=Indica onde as janelas serão exibidas.
+:0.0=Caso não tenha nada antes do ":" significa localhost, caso você queira exibir os clientes em outra máquia você deve configurar o IP da outra máquina antes dos ":" e permitir o acesso na outra máquina através do "xhost" e também no "display manager (adicione no arquivo server: "xserver-allow-tcp=true" e reinicia o display manager: "systemctl restart NOME")", o primeiro "0" é o monitor o segundo "0" é a entrada.
+xhost=Comando utilizado para liberar acesso a esta máquina.
++10.0.0.0 - Libera este IP.
++ - Desabilita o controle de acesso.
+KDE, GNOME, etc=São gerenciadores de janelas e rodam em cima do X11.
+
+106.2 Configurar o Display Manager
+
+Display Manager é a tela de login do Linux, existem vários display manager que geralmente são instalados junto com os gerenciadores de janelas, o mais comum é o lightdm. O display manager a ser utilizado pode ser definido em "/etc/X11/default-display-manager".
+Arquivos de configuração do display manager:
+/etc/NOME
+NOME-greeter.conf=Aparência
+NOME.conf=Configurações
+"[XDMCPServer]
+enabled=true" = Essa configuração habilita o display manager a conectar em outra máquina. (reinicie o display manager: "systemctl restart NOME")
+Entre em um terminal e digite: "xorg -terminate -query 10.0.0.0"
+/usr/share/NOME
+NOME-greeter.conf=Aparência
+NOME.conf=Configurações
+systemctl get-default=Mostra o target padrão para inicialização do sistema.
+systemctl set-default=Seta o target padrão para a próxima inicialização.
+
+106.3 Acessibilidade
+
+Teclado:
+sticky keys=Habilita a opção de pressionar uma tecla por vês. (Exemplo: Não segurar o shift para letra maiúscula, apenas aperta-la)
+slow keys=Segurar a tecla um pouco apertada para que a letra apareça na tela.
+bounce keys=Adiciona um delay quando você pressiona a mesma tecla duas vezes.
+Mouse:
+mouse emulation=Habilita a opção de utilizar o mouse pelo teclado.
+kmag=Aplicativo de lupa.
